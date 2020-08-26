@@ -19,7 +19,7 @@ $ npm install -g ns-front
 $ nsfront COMMAND
 running command...
 $ nsfront (-v|--version|version)
-ns-front/0.0.0 linux-x64 node-v14.6.0
+ns-front/0.0.1 linux-x64 node-v14.6.0
 $ nsfront --help [COMMAND]
 USAGE
   $ nsfront COMMAND
@@ -28,28 +28,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`nsfront hello [FILE]`](#nsfront-hello-file)
 * [`nsfront help [COMMAND]`](#nsfront-help-command)
-
-## `nsfront hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ nsfront hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ nsfront hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.0/src/commands/hello.ts)_
+* [`nsfront test`](#nsfront-test)
 
 ## `nsfront help [COMMAND]`
 
@@ -67,4 +47,22 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
+
+## `nsfront test`
+
+test lets you confirm that your code is not violating anyof the rules for testing required by nostack.  For documentation about those rules, please see https://bit.ly/nsFrontEndRules.  This is actually one of the tests conducted by NoStack to gauge the quality of submitted code.  Essentially, the test generates a new version of the code andthen simply compares it against your current version.  If there are differences, then there is a problem with your code.
+
+```
+USAGE
+  $ nsfront test
+
+OPTIONS
+  -a, --appDir=appDir  application directory
+  -h, --help           show CLI help
+
+EXAMPLE
+  $ nsfront test -a ~/temp/myApp
+```
+
+_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.1/src/commands/test.ts)_
 <!-- commandsstop -->

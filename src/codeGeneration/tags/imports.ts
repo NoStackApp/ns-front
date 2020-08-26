@@ -1,9 +1,9 @@
 import {formTypes, nodeTypes} from '../../constants'
 
 const Handlebars = require('handlebars')
-const H = require('just-handlebars-helpers');
+const H = require('just-handlebars-helpers')
 
-H.registerHelpers(Handlebars);
+H.registerHelpers(Handlebars)
 /*
 import styled{{#if (neq boilerPlateInfo.nodeType '${nodeTypes.ROOT}') }}, { keyframes }{{/if}} from 'styled-components';
  */

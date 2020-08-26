@@ -8,9 +8,9 @@ async function makeDir(dirName: string) {
   try {
     await fs.ensureDir(dirName, options)
     // console.log('success creating dirs')
-  } catch (err) {
+  } catch (error) {
     // tslint:disable-next-line:no-console
-    console.error(err)
+    console.error(error)
   }
 }
 

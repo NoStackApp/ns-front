@@ -27,17 +27,17 @@ const inflection = require('inflection')
 const getInstance = (type: string, componentType: string) => {
   if (componentType === formTypes.LIST) return pluralLowercaseName(type)
   return type
-};
+}
 
 const getLowercaseComponentName = (type: string, componentType: string) => {
   if (componentType === formTypes.CREATION) return type + 'CreationForm'
   if (componentType === formTypes.LIST) return pluralLowercaseName(type)
   return type
-};
+}
 
 const getComponentName = (type: string, componentType: string) => {
   return inflection.camelize(getLowercaseComponentName(type, componentType))
-};
+}
 
 // const componentName = (type: string, componentType: string) => {
 //   if (componentType === formTypes.CREATION) return singularName(type) + 'CreationForm'
@@ -115,7 +115,7 @@ import {{childComponent}} from '../{{childComponent}}';
 `)
 
 const actionIdsForSingleChildrenTemplate = Handlebars.compile(
-  `{{#children}}, CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID{{/children}}`,
+  '{{#children}}, CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID{{/children}}',
 )
 
 const connectedChildrenBodyTemplate = Handlebars.compile(`
@@ -234,9 +234,9 @@ export const replacementTags = (
     },
   )
 
-  const SingularName = singularName(type);
-  const PluralName = pluralName(type);
-  const typeSpecifier = allCaps(`${type}_for_${source}`);
+  const SingularName = singularName(type)
+  const PluralName = pluralName(type)
+  const typeSpecifier = allCaps(`${type}_for_${source}`)
 
   const singleChildrenParams = singleChildrenParamsTemplate({
     children: children.map(child => {
@@ -245,7 +245,7 @@ export const replacementTags = (
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childSingular: singularName(child)}
     }),
-  });
+  })
   const actionIdsForSingleChildren = actionIdsForSingleChildrenTemplate({
     children: children.map(child => {
       const childInfo = currentStack.types[child]
@@ -253,7 +253,7 @@ export const replacementTags = (
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {childAllCaps: allCaps(child), sourceAllCaps: allCaps(source)}
     }).filter(Boolean),
-  });
+  })
   const typeIdsForSingleChildren = typeIdsForSingleChildrenTemplate({
     children: children.map(child => {
       const childInfo = currentStack.types[child]
@@ -261,7 +261,7 @@ export const replacementTags = (
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childAllCaps: allCaps(child)}
     }),
-  });
+  })
 
   const names = {
     singular: SingularName,
@@ -276,7 +276,7 @@ export const replacementTags = (
       relationships: relationshipsForSource(source),
       query: queryForSource(source),
     },
-  };
+  }
 
   const tags = {
     Unit: source,
@@ -361,7 +361,7 @@ export const replacementTags = (
       formType: boilerPlateInfo.formType,
       SingularName: singularName(type),
       SINGLE_CHILDREN_COMPOSE_STATEMENTS: singleChildrenComposeStatementsTemplate({
-        children: children.map((child) => {
+        children: children.map(child => {
           const childInfo = currentStack.types[child]
           const assnInfo = childInfo.sources[source]
           // const isNotLast: boolean = numberOfChildren > index + 1

@@ -51,7 +51,7 @@ export async function generateUnitTypeFiles(
         // await generateFilesForType(currentStack, type, source, selectionRoot, root, sourceInfo, highestLevel)
       }
     }
-  } catch (sourceCreationError) {
-    throw new Error(`error creating unit ${source}: ${sourceCreationError}`)
+  } catch (error) {
+    throw new Error(`error creating unit ${source}: ${error}`)
   }
 }

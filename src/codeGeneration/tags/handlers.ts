@@ -1,9 +1,9 @@
 import {formTypes} from '../../constants'
 
 const Handlebars = require('handlebars')
-const H = require('just-handlebars-helpers');
+const H = require('just-handlebars-helpers')
 
-H.registerHelpers(Handlebars);
+H.registerHelpers(Handlebars)
 
 // const helpers = require('handlebars-helpers');
 

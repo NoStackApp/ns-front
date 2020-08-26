@@ -37,6 +37,7 @@ export async function generateAppFile(currentStack: StackInfo, userClass: string
     // topComponentSetting = `${userClass}Id={ currentUser.id }`
   }
 
+  // eslint-disable-next-line no-warning-comments
   // todo: remove this
   if (!topComponentType) {
     throw new Error(`source ${source} contains no selected items`)

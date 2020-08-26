@@ -2,7 +2,6 @@ import {Command, flags} from '@oclif/command'
 import {isRequired} from '../isRequired'
 
 const fs   = require('fs-extra')
-const inflection = require('inflection')
 const yaml = require('js-yaml')
 
 import {generateTestCode} from '../codeGeneration/generateTestCode'

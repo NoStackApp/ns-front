@@ -1,13 +1,13 @@
 import {formTypes, dataTypes, nodeTypes} from '../../constants'
 
 const Handlebars = require('handlebars')
-const H = require('just-handlebars-helpers');
+const H = require('just-handlebars-helpers')
 
-H.registerHelpers(Handlebars);
+H.registerHelpers(Handlebars)
 
-const startCustomStyling = `// ns__custom_start {{tempDetails}} styling`;
+const startCustomStyling = '// ns__custom_start {{tempDetails}} styling'
 
-const endCustomStyling = `// ns__custom_end {{tempDetails}} styling`
+const endCustomStyling = '// ns__custom_end {{tempDetails}} styling'
 
 export const styling = Handlebars.compile(`
 

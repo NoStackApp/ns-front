@@ -9,7 +9,7 @@ async function makeDir(dirName: string) {
     await fs.ensureDir(dirName, options)
     // console.log('success creating dirs')
   } catch (error) {
-    // tslint:disable-next-line:no-console
+    // eslint-disable-next-line no-console
     console.error(error)
   }
 }

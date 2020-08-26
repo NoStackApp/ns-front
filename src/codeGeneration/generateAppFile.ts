@@ -8,8 +8,6 @@ const fs = require('fs-extra')
 const Handlebars = require('handlebars')
 
 export async function generateAppFile(currentStack: StackInfo, userClass: string) {
-  console.log('In generateAppFile...')
-
   // App
   if (!currentStack.userClasses[userClass]) {
     throw new Error(`template contains no userClass '${userClass}'`)
@@ -25,7 +23,6 @@ export async function generateAppFile(currentStack: StackInfo, userClass: string
   const highestLevel = 'highestLevel'
   const sourceInfo = currentStack.sources[source]
   const highestLevelList = sourceInfo.selectedTree[highestLevel]
-  console.log(`highestLevelList for ${source}=${JSON.stringify(highestLevelList)}`)
 
   let topComponentType: string = sourceInfo.root
   let topComponent = singularName(topComponentType)
@@ -43,12 +40,10 @@ export async function generateAppFile(currentStack: StackInfo, userClass: string
     throw new Error(`source ${source} contains no selected items`)
   }
 
-  console.log('In generateAppFile... setting assnType')
   if (currentStack.types[topComponentType].sources[source].assnType === associationTypes.SINGLE_REQUIRED) {
     topComponent = singularName(topComponentType)
   }
 
-  console.log('In generateAppFile... about to do boilerplate')
   const appFile = Handlebars.compile(await fs.readFile(`${boilerplateDir}/App.js`, 'utf-8'))
 
   const appFileContents = appFile({
@@ -60,5 +55,4 @@ export async function generateAppFile(currentStack: StackInfo, userClass: string
 
   // console.log(appFileContents)
   await fs.outputFile(`${srcDir}/App.js`, appFileContents)
-  console.log('In generateAppFile... done')
 }

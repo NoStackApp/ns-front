@@ -14,9 +14,7 @@ const boilerPlateFromInfo = (boilerPlateInfo: BoilerPlateInfoType) =>
   boilerPlates[boilerPlateInfo.formType + boilerPlateInfo.dataType + boilerPlateInfo.nodeType]
 
 export async function generateTypeFile(type: string, source: string, boilerPlateInfo: BoilerPlateInfoType, currentStack: StackInfo) {
-  console.log(`in generateTypeFile, type=${type}, boilerPlateInfo=${JSON.stringify(boilerPlateInfo)}`)
   const boilerPlate = boilerPlateFromInfo(boilerPlateInfo)
-  console.log(`... boilerPlate=${boilerPlate}`)
   const dir = boilerPlateToDir(type, boilerPlateInfo.formType)
   // console.log(`in generateTypeFile, dir=${dir}`)
 
@@ -25,7 +23,6 @@ export async function generateTypeFile(type: string, source: string, boilerPlate
     path,
   ]
 
-  console.log(`about to call replacementTags(${type}, ${source}, ${currentStack}, ${boilerPlateInfo})`)
   const tags = replacementTags(type, source, currentStack, boilerPlateInfo)
 
   // if (boilerPlate === 'genericCreationFormRoot') {

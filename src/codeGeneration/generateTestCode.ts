@@ -51,7 +51,6 @@ export async function generateTestCode(
   try {
     await generateAppTypeFiles(sources, userClass, currentStack)
   } catch (error) {
-    console.log('error in creating app component files:')
     throw error
   }
 
@@ -65,11 +64,9 @@ export async function generateTestCode(
     `${appDir}/src/**/*.{js,jsx}`,
   ]
 
-  console.log(`about to call prettier. ${JSON.stringify(prettierArgs)}`)
   try {
     await execa('prettier', prettierArgs)
   } catch (error) {
-    console.log('error in running prettier')
     throw error
   }
 }

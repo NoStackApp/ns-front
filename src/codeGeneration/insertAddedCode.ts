@@ -69,9 +69,9 @@ export const insertAddedCode = async (testDir: string, addedCodeDoc: string) => 
     })
   })
 
-  console.log(`about to call grunt:
-     $ ${gruntDir}/node_modules/.bin/grunt --testDir=${baseDir} --addedCodeDoc=${addedCodeDoc} --base=${gruntDir}
-  `)
+  // console.log(`about to call grunt:
+  //    $ ${gruntDir}/node_modules/.bin/grunt --testDir=${baseDir} --addedCodeDoc=${addedCodeDoc} --base=${gruntDir}
+  // `)
   await execa(
     `${gruntDir}/node_modules/.bin/grunt`,
     ['--testDir=' + baseDir,  '--addedCodeDoc=' + addedCodeDoc,  `--base=${gruntDir}`],

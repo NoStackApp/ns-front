@@ -136,7 +136,6 @@ export const replacementTags = (
   currentStack: StackInfo,
   boilerPlateInfo: BoilerPlateInfoType,
 ) => {
-  console.log(`in replacementTags for type ${type}, form type ${boilerPlateInfo.formType}`)
   // we set children and connectedChildren, then derive all of the tag values to pass to the boilerplate templates.
   const sourceInfo = currentStack.sources[source]
   const typeSourceInfo = currentStack.types[type].sources[source]

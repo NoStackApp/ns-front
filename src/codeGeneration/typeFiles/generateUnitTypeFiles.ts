@@ -32,7 +32,6 @@ export async function generateUnitTypeFiles(
 
     const selectedTreeTypes = Object.keys(selectedTree)
 
-    console.log(`source ${source} selectedTreeTypes=${JSON.stringify(selectedTreeTypes)}`)
     let j
     for (j = 0; j < selectedTreeTypes.length; j++) {
       const type = selectedTreeTypes[j]
@@ -41,16 +40,15 @@ export async function generateUnitTypeFiles(
       await generateFilesForType(currentStack, type, source, selectionRoot, root, sourceInfo, highestLevel)
     }
 
-    const joins = sourceInfo.joins
-    console.log(`about to look at joins=${JSON.stringify(joins)}`)
-    if (joins) {
-      for (j = 0; j < Object.keys(joins).length; j++) {
-        const joinName = Object.keys(joins)[j]
-        console.log(`joinName=${joinName}`)
-        // eslint-disable-next-line no-await-in-loop
-        // await generateFilesForType(currentStack, type, source, selectionRoot, root, sourceInfo, highestLevel)
-      }
-    }
+    // const joins = sourceInfo.joins;
+    // if (joins) {
+    //   for (j = 0; j < Object.keys(joins).length; j++) {
+    //     const joinName = Object.keys(joins)[j];
+    //     eslint - disable - next - line;
+    //     no - await - in -loop;
+    //     await generateFilesForType(currentStack, type, source, selectionRoot, root, sourceInfo, highestLevel);
+    //   }
+    // }
   } catch (error) {
     throw new Error(`error creating unit ${source}: ${error}`)
   }

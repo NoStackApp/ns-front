@@ -36,13 +36,13 @@ export async function createDotFiles(
     ],
   }
 
-  console.log(`generatedJsonFile=${generatedJsonFile}`)
-
   jsonfile.readFile(generatedJsonFile, async function (err: any, obj: any) {
+    // eslint-disable-next-line no-console
     if (err) console.error(err)
     obj.husky = husky
     obj['lint-staged'] = lintStaged
     await jsonfile.writeFile(generatedJsonFile, obj, {spaces: 2}, function (err: any) {
+      // eslint-disable-next-line no-console
       if (err) console.error(err)
     })
   })

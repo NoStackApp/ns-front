@@ -54,11 +54,8 @@ export default class Test extends Command {
     const {appName, userClass, units} = appParams
 
     // store added code before generating new code.
-    console.log(`about to call storeAddedCode(${appDir})`)
     await storeAddedCode(appDir)
 
-    console.log(`about generateAppCode(${appDir})`)
-    console.log(`data:(${appName},${userClass}, ${jsonPath})`)
     const testDir = `${appDir}.test`
 
     try {
@@ -70,32 +67,26 @@ export default class Test extends Command {
       throw error
     }
 
-    console.log(`about to insertAddedCode(${testDir})`)
     const addedCodeDoc = `${docsDir}/addedCode.json`
     await insertAddedCode(testDir, addedCodeDoc)
 
     const originalComps = `${appDir}/src/components`
     const generatedComps = `${testDir}/src/components`
     const diffsDir = `${testDir}/diffs`
-    const diffsFile = `${testDir}/diffs`
 
-    console.log(`diffsFile = ${diffsFile}`)
     try {
       fs.ensureDir(diffsDir)
       units.map((unit: string) => {
-        console.log(`in ${unit}`)
         const diffsFile = `${diffsDir}/${unit}`
-        console.log(`diffsFile = ${diffsFile}`)
         const originalUnit = `${originalComps}/${unit}`
         const generatedUnit = `${generatedComps}/${unit}`
         const subprocess = execa('diff', ['-rbBw', originalUnit, generatedUnit])
         subprocess.stdout.pipe(fs.createWriteStream(diffsFile))
       })
     } catch (error) {
-      console.log('error running diff')
       throw error
     }
-    console.log(`done running the test. To see any issues, you can look
+    this.log(`done running the test. To see any issues, you can look
 in the directory ${diffsDir}.  Any diff shown is a problem.
     If it's empty, then your code satisfies the no-stack requirement for
     being regenerable.  If not, see ${frontEndRulesDoc} for more info.`)

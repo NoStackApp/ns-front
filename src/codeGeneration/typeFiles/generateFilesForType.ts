@@ -22,7 +22,6 @@ export async function generateFilesForType(
   let formType = formTypes.SINGLE_INSTANCE
 
   if (type === root && type !== sourceInfo.selectedTree[highestLevel][0]) {
-    console.log(`${type} is root for ${source}`)
     // this is the root, being used as the highest level component even though
     // it is not selected.  Therefore, it must be treated as a grouping in order to
     // show a list of true highest level components.

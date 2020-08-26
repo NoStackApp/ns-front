@@ -43,6 +43,7 @@ export async function createQueryFile(currentStack: StackInfo, source: string) {
   try {
     await fs.outputFile(queryFile, queryFileText)
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error)
   }
 }

@@ -57,6 +57,7 @@ export async function generateTestCode(
   // '--end-of-line auto',
   // '--trailing-comma es5',
   const prettierArgs = [
+    'prettier',
     '--single-quote',
     '--jsx-single-quote',
     '--trailing-comma es5',
@@ -65,7 +66,7 @@ export async function generateTestCode(
   ]
 
   try {
-    await execa('prettier', prettierArgs)
+    await execa('npx', prettierArgs)
   } catch (error) {
     throw error
   }

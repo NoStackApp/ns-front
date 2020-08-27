@@ -18,7 +18,7 @@ $ npm install -g ns-front
 $ nsfront COMMAND
 running command...
 $ nsfront (-v|--version|version)
-ns-front/0.0.3 linux-x64 node-v14.6.0
+ns-front/0.0.5 linux-x64 node-v14.6.0
 $ nsfront --help [COMMAND]
 USAGE
   $ nsfront COMMAND
@@ -49,6 +49,8 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0
 
 ## `nsfront test`
 
+The 'test' command lets you confirm that your code is not violating any of
+
 ```
 USAGE
   $ nsfront test
@@ -69,13 +71,8 @@ DESCRIPTION
 EXAMPLE
   $ nsfront test -a ~/temp/myApp
 ```
-##Using the Results of 'test'
-Currently, you must yourself look at the results of test.  You can find them in the directory <your app>.test.  So for instance, if your app is in `~/projects/myApp`, then look for a generated directory `~/projects/myApp.test`.
 
-The test directory contains some generated code in `src`, as well as a `diffs` directory.  In the `diffs` directory, you should find a file for each unit.  That file can be viewed in any editor, and shows any differences between your code and code that was generated in `.test/src` for the sake of the test.  The ideal is an empty file.  If there is anything in the file, then your code is not following the [NoStack Front End Guidelines](https://bit.ly/nsFrontEndRules).  
-
-
-_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.3/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.5/src/commands/test.ts)_
 <!-- commandsstop -->
 
 ### Problems in a Diffs File
@@ -86,4 +83,4 @@ The problems can be one of the following:
   a. You may simply need to lint your code and remove linting errors.  For instance, it could be that your code using a double quote and the generated code uses a single quote. 
   b. Your code may have missing or altered comment lines for delimiting sections or custom code areas. You may have to look at the generated code a bit to identify the discrepancies.
 4. Your code has files that don't appear in the generated code.  You need to move them to the `src/custom` directory.
-5. The generated code has files that don't appear in your code.  That normally means that you deleted a generated file.  Technically, that doesn't pose an immediate problem, given that in the worst case a future regeneration of code will add a file.  But the deletion won't last.  Probably there's a better solution by replacement of sections, possibly incorporating code or components programmed within the `src/custom` directory. 
+5. The generated code has files that don't appear in your code.  That normally means that you deleted a generated file.  Technically, that doesn't pose an immediate problem, given that in the worst case a future regeneration of code will add a file.  But the deletion won't last.  Probably there's a better solution by replacement of sections, possibly incorporating code or components programmed within the `src/custom` directory.

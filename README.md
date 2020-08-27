@@ -75,8 +75,12 @@ EXAMPLE
 _See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.5/src/commands/test.ts)_
 <!-- commandsstop -->
 
-### Problems in a Diffs File
-The problems can be one of the following:
+### Working with Test Results
+The diff files in `<appPath>.test/diffs` show a number of problems.  If you understand what's happening, the solutions are usually straightforward, but it may seem confusing at first. 
+
+It helps to understand clearly that your code files in `<appPath>/src/components` are being compared to generated versions in `<appPath>.test/src/components`.  You may want to learn the basics of `diff` outputs if you haven't already.
+
+The problems (and their likely causes and solutions) are shown below.  They can be one of the following:
 1. There are lines in the generated test code that do not appear in yours.  That would indicate that you removed some code, or that something in the version of your ns-front is more uptodate than the version used to generate your code.  The solution is to add those lines to your code in the line number indicated, and then to try the test again.
 2. Your code has lines not in the generated code.  That usually indicates that you added code in places not permitted in the code.  You need to insert all of your custom code in ns-custom areas, or to replace a section of the generated code using the "replacement" delimiter.  It's always preferred to place code into a custom area rather than replacing, but if you must then replacement works.  
 3. Your code is simply different.  That situation can arise from one of two situations:

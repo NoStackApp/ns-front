@@ -13,14 +13,14 @@ import execa = require('execa');
 const frontEndRulesDoc = 'https://bit.ly/nsFrontEndRules'
 
 export default class Test extends Command {
-  static description = String(
-    'test lets you confirm that your code is not violating any' +
-    'of the rules for testing required by nostack.  For documentation about those ' +
-    'rules, please see ' + frontEndRulesDoc + '.' +
-    '  This is actually one of the tests conducted by NoStack to gauge the quality of ' +
-    'submitted code.  Essentially, the test generates a new version of the code and' +
-    'then simply compares it against your current version.  If there are differences, ' +
-    'then there is a problem with your code.')
+  static description = String(`
+The 'test' command lets you confirm that your code is not violating any of
+the rules for testing required by nostack.  For documentation about those
+rules, please see ${frontEndRulesDoc}.  This is actually one of the tests
+conducted by NoStack to gauge the quality of submitted code.  Essentially, the
+test generates a new version of the code and then simply compares it against
+your current version.  If there are differences, then there is a problem with
+your code.`)
 
   static examples = [
     '$ nsfront test -a ~/temp/myApp',

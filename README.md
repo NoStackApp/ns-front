@@ -1,7 +1,6 @@
 ns-front
 ========
-
-Tools for front end no stack developers
+The ns-front CLI provides tools for front end developers building NoStack applications.  Currently, the tool offers only one tool: a test of an app to see whether the code conforms to the [NoStack Front End Guidelines](https://bit.ly/nsFrontEndRules).
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/ns-front.svg)](https://npmjs.org/package/ns-front)
@@ -66,3 +65,4 @@ EXAMPLE
 
 _See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.0.2/src/commands/test.ts)_
 <!-- commandsstop -->
+

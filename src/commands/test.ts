@@ -8,7 +8,8 @@ import {generateTestCode} from '../codeGeneration/generateTestCode'
 import {insertAddedCode} from '../codeGeneration/insertAddedCode'
 import {storeAddedCode} from '../codeGeneration/storeAddedCode'
 import {AppInfo} from '../constants/types'
-import execa = require('execa');
+import {discrepanciesFound} from '../testing/discrepanciesFound'
+import execa = require('execa')
 
 const frontEndRulesDoc = 'https://bit.ly/nsFrontEndRules'
 
@@ -76,18 +77,19 @@ your code.`)
 
     try {
       fs.ensureDir(diffsDir)
-      units.map((unit: string) => {
+      units.map(async (unit: string) => {
         const diffsFile = `${diffsDir}/${unit}`
         const originalUnit = `${originalComps}/${unit}`
         const generatedUnit = `${generatedComps}/${unit}`
         const subprocess = execa('diff', ['-rbBw', originalUnit, generatedUnit])
         subprocess.stdout.pipe(fs.createWriteStream(diffsFile))
+        await discrepanciesFound(diffsFile)
       })
     } catch (error) {
       throw error
     }
     this.log(`done running the test. To see any issues, you can look
-in the directory ${diffsDir}.  Any diff shown is a problem.
+in the directory ${diffsDir}.  Any discrepancy shown is a problem.
     If it's empty, then your code satisfies the no-stack requirement for
     being regenerable.  If not, see ${frontEndRulesDoc} for more info.`)
   }

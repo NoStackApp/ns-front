@@ -8,7 +8,7 @@ const fs = require('fs-extra');
 let customCodeObject = {};
 let addedCodeObject = {};
 let replacedCodeObject = {};
-// let removedCodeObject = {};
+let removedCodeObject = {};
 
 // the following should not be here.  Should be exported from constants/regExAddedCodeSections.
 // but grunt isn't set up to import from external ts files.
@@ -53,6 +53,11 @@ const replacementFirstLineBody = `${commentOpen} ns__start_replacement unit: ${l
 const replacementFullRegExBody = `${replacementFirstLineBody}${content}${commentOpen} ns__end_section unit: ${locationRepetition}${endOfFirstLine}`
 const regExReplacementCodeSection = new RegExp(replacementFullRegExBody, 'g')
 // const regExForReplacementFirstLine = new RegExp(replacementFirstLineBody);
+
+// removed code--looks for imports (currently, only working for that) and comments them out.
+const removeImportRegExBody = `$ import ([^\\s]*) from`
+const regExRemoveImport = new RegExp(removeImportRegExBody, 'g')
+
 
 // clean up
 const delimiter = `${commentOpen} ns__(start|end)_section unit: ${locationSpec}${endOfFirstLine}`
@@ -194,6 +199,28 @@ module.exports = function (grunt) {
               return stringToInsert;
               // }
               // grunt.log.write('no match found in gen\n');
+            },
+          },
+          {
+            from: regExRemoveImport,
+            to: function (matchedWord, index, fullText, regexMatches) {   // callback removal
+              console.log(`gen match found: ${JSON.stringify(regexMatches, null, 2)}\n`);
+              // const firstLineOpening = match[1];
+              const location = regexMatches[0];
+
+              // const firstLineEnding = match[5];
+              console.log(`match found in replacements: unit: ${unit} component: ${component} location: ${location}`);
+              // console.log(`content = ${JSON.stringify(addedCodeObject,null,2)}`);
+
+              if (!removedCodeObject[unit] ||
+                !replacedCodeObject[unit][component] ||
+                !replacedCodeObject[unit][component][location]
+              )  {
+                // console.log('no replacement code.')
+                return matchedWord;
+              }
+
+              return "// ns__remove_" + matchedWord;
             },
           },
         ],

@@ -49,6 +49,7 @@
     "/bin",
     "/lib",
     "/resources",
+    "Gruntfile.js",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],

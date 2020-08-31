@@ -23,8 +23,8 @@ export async function discrepanciesFound(diffFile: string) {
     problemsFound = true
     // eslint-disable-next-line no-console
     console.log(`
-*** DISCREPANCIES FOUND!  You can find discrepancies in ${diffFile}. Please see
-https://www.npmjs.com/package/ns-front#working-with-test-results for more information on how to resolve them. ***`)
+*** DISCREPANCIES FOUND!  You can find the discrepancies in ${diffFile}. Please see
+https://www.npmjs.com/package/ns-front#working-with-test-results for how to resolve them. ***`)
   }
   // console.log(`matches=${JSON.stringify(matches, null, 2)}`)
 

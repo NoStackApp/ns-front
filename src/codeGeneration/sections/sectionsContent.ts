@@ -9,13 +9,26 @@ import {
   singularName,
 } from '../../tools/inflections'
 import {beginningOfFile} from './sectionFunctions/beginningOfFile'
+import {button} from './sectionFunctions/button'
 import {compose} from './sectionFunctions/compose'
 import {functionDec} from './sectionFunctions/functionDec'
 import {handlers} from './sectionFunctions/handlers'
+import {imports} from './sectionFunctions/imports'
 import {proptypes} from './sectionFunctions/propTypes'
 import {styling} from './sectionFunctions/styling'
-import {imports} from './sectionFunctions/imports'
-import {button} from './sectionFunctions/button'
+import {
+  actionIdsForSingleChildrenTemplate,
+  childrenBodyTemplate,
+  childrenConstantDeclarationsTemplate,
+  childrenImportsTemplate,
+  childrenTypeListTemplate,
+  connectedChildrenBodyTemplate,
+  connectedChildrenImportsTemplate,
+  singleChildCreationCodeTemplate,
+  singleChildrenComposeStatementsTemplate,
+  singleChildrenParamsTemplate,
+  typeIdsForSingleChildrenTemplate,
+} from './subTemplates'
 
 const Handlebars = require('handlebars')
 const inflection = require('inflection')
@@ -39,96 +52,7 @@ const getComponentName = (type: string, componentType: string) => {
   return inflection.camelize(getLowercaseComponentName(type, componentType))
 }
 
-// const componentName = (type: string, componentType: string) => {
-//   if (componentType === formTypes.CREATION) return singularName(type) + 'CreationForm'
-//   if (componentType === formTypes.LIST) return pluralName(type)
-//   return singularName(type)
-// };
-
-// const isCreationType = (componentType: string) => componentType === formTypes.CREATION;
-
 const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
-
-const singleChildCreationCodeTemplate = Handlebars.compile(`
-{{#children}}
-{{#if property}}
-    await create{{singularChild}}({
-      variables: {
-        actionId: CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID,
-        executionParameters: JSON.stringify({
-          parentInstanceId: new{{singularParent}}Data.instanceId,
-          value: 'false',
-        }),
-        unrestricted: false,
-      },
-      refetchQueries,
-    });
-{{/if}}
-{{/children}}
-`)
-
-const childrenBodyTemplate = Handlebars.compile(`
-{{#children}}
-{{#if nonProperty}}
-< {{childComponent}}
-              {{childPlural}} = { {{childPlural}} }
-              {{type}}Id = { {{type}}.id }
-              label='{{childSingular}}?'
-              refetchQueries={refetchQueries}
-      />
-{{else}}
-< {{childComponent}}
-              {{child}} = { {{child}} }
-              {{type}}Id = { {{type}}.id }
-              label='{{childComponent}}?'
-              refetchQueries={refetchQueries}
-      />
-{{/if}}
-{{/children}}
-`)
-
-const childrenConstantDeclarationsTemplate = Handlebars.compile(`
-{{#children}}
-  const {{child}}Data = {{type}}.children && {{type}}.children.find(child => child.typeId === TYPE_{{childAllCaps}}_ID);
-{{#if nonProperty}}
-  const {{pluralChild}} = {{child}}Data ? {{child}}Data.instances : [];
-{{else}}
-  const {{child}} = {{child}}Data ? {{child}}Data.instances[0] : [];
-{{/if}}
-{{/children}}
-`)
-
-const childrenTypeListTemplate = Handlebars.compile(
-  '{{#children}},\n' +
-  'TYPE_{{childAllCaps}}_ID{{/children}}')
-const typeIdsForSingleChildrenTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, TYPE_{{childAllCaps}}_ID{{/if}}{{/children}}')
-const singleChildrenParamsTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, create{{childSingular}}{{/if}}{{/children}}')
-const singleChildrenComposeStatementsTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, graphql(EXECUTE_ACTION, { name: \'create{{childSingular}}\' }){{/if}}{{#if notIsLast}}, {{/if}}{{/children}}')
-
-const childrenImportsTemplate = Handlebars.compile(`
-{{#children}}
-import {{childComponent}} from '../{{childComponent}}';
-{{/children}}
-`)
-
-const actionIdsForSingleChildrenTemplate = Handlebars.compile(
-  '{{#children}}, CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID{{/children}}',
-)
-
-const connectedChildrenBodyTemplate = Handlebars.compile(`
-{{#connectedChildren}}
-< {{childComponent}} {{type}}Id = { {{type}}.id} />
-{{/connectedChildren}}
-`)
-
-const connectedChildrenImportsTemplate = Handlebars.compile(`
-{{#connectedChildren}}
-import {{childComponent}} from '../../{{singularConnected}}/{{childComponent}}';
-{{/connectedChildren}}
-`)
 
 export const sectionsContent = (
   type: string,
@@ -136,29 +60,56 @@ export const sectionsContent = (
   stackInfo: StackInfo,
   boilerPlateInfo: BoilerPlateInfoType,
 ) => {
-  // we set children and connectedChildren, then derive all of the tag values to pass to the boilerplate templates.
-  const unitInfo = stackInfo.sources[unit]
-  const typeUnitInfo = stackInfo.types[type].sources[unit]
+  // stack data
+  const typesInfo = stackInfo.types
+  const sourcesInfo = stackInfo.sources
+  const unitInfo = sourcesInfo[unit]
+  const typeUnitInfo = typesInfo[type].sources[unit]
   const {parentType} = typeUnitInfo
-
   const children = unitInfo.selectedTree[type]
-  // console.log(`children for type ${type} = ${JSON.stringify(children)}`)
   const connectedUnit: string = unitInfo.connections[type]
+  const connectedUnitInfo = sourcesInfo[connectedUnit]
   const constraintsInfo = unitInfo.constraints
+
+  // names
+  const SingularName = singularName(type)
+  const PluralName = pluralName(type)
+  const component = getComponentName(type, boilerPlateInfo.formType)
+  const instance = getInstance(type, boilerPlateInfo.formType)
+  const names = {
+    singular: SingularName,
+    singularLowercase: type,
+    plural: PluralName,
+    pluralLowercase: pluralLowercaseName(type),
+    parent: parentType,
+    source: {
+      name: unit,
+      allCaps: allCaps(unit),
+      constant: `SOURCE_${allCaps(unit)}_ID`,
+      relationships: relationshipsForSource(unit),
+      query: queryForSource(unit),
+    },
+  }
+
+  // we set children and connectedChildren, then derive all of the tag values
+  // to pass to the boilerplate templates.
 
   let connectedChildren: TreeTypeChildrenList = {}
   if (connectedUnit) {
     connectedChildren = {
-      ...stackInfo.sources[connectedUnit].tree[type],
+      ...connectedUnitInfo.tree[type],
     }
   }
+
+  // content
+  const typeSpecifier = allCaps(`${type}_for_${unit}`)
 
   // updateOnAddLine is 'refetchQueries' unless the current typeName is a property.
   let refetchQueriesLine = 'refetchQueries,'
   if (boilerPlateInfo.nodeType === nodeTypes.ROOT) {
     children.map(
       child => {
-        const childInfo = stackInfo.types[child]
+        const childInfo = typesInfo[child]
         const assnInfo = childInfo.sources[unit]
         if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED) {
           refetchQueriesLine = ''
@@ -182,12 +133,9 @@ export const sectionsContent = (
     component: getComponentName(type, boilerPlateInfo.formType),
   }) + ', loc:'
 
-  const component = getComponentName(type, boilerPlateInfo.formType)
-  const instance = getInstance(type, boilerPlateInfo.formType)
-
   const childrenBodyList = childrenBodyTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
         return {
@@ -216,7 +164,7 @@ export const sectionsContent = (
 
   const childrenImportList = childrenImportsTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
         return {childComponent: pluralName(child)}
@@ -233,13 +181,9 @@ export const sectionsContent = (
     },
   )
 
-  const SingularName = singularName(type)
-  const PluralName = pluralName(type)
-  const typeSpecifier = allCaps(`${type}_for_${unit}`)
-
   const singleChildrenParams = singleChildrenParamsTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childSingular: singularName(child)}
@@ -247,7 +191,7 @@ export const sectionsContent = (
   })
   const actionIdsForSingleChildren = actionIdsForSingleChildrenTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {childAllCaps: allCaps(child), sourceAllCaps: allCaps(unit)}
@@ -255,7 +199,7 @@ export const sectionsContent = (
   })
   const typeIdsForSingleChildren = typeIdsForSingleChildrenTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childAllCaps: allCaps(child)}
@@ -264,7 +208,7 @@ export const sectionsContent = (
 
   const childrenConstantDeclarations = childrenConstantDeclarationsTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
         return {
@@ -291,7 +235,7 @@ export const sectionsContent = (
 
   const singleChildrenComposeStatements = singleChildrenComposeStatementsTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       // const isNotLast: boolean = numberOfChildren > index + 1
       // console.log(`for type ${type}, for child ${child}, isNotLast=${isNotLast}`)
@@ -308,24 +252,9 @@ export const sectionsContent = (
     component: getComponentName(type, boilerPlateInfo.formType),
   })
 
-  const names = {
-    singular: SingularName,
-    singularLowercase: type,
-    plural: PluralName,
-    pluralLowercase: pluralLowercaseName(type),
-    parent: parentType,
-    source: {
-      name: unit,
-      allCaps: allCaps(unit),
-      constant: `SOURCE_${allCaps(unit)}_ID`,
-      relationships: relationshipsForSource(unit),
-      query: queryForSource(unit),
-    },
-  }
-
   const singleChildCreationCode = singleChildCreationCodeTemplate({
     children: children.map(child => {
-      const childInfo = stackInfo.types[child]
+      const childInfo = typesInfo[child]
       const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {

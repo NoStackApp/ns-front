@@ -44,6 +44,13 @@ your code.`)
 
     const jsonPath = `${docsDir}/stack.json`
 
+    // npm version 8 has a known bug with fs-extra...
+    const nodeRelease = parseFloat(process.versions.node)
+    if (nodeRelease < 9) {
+      throw new Error(`Minimum required node version to run ns-front is 9.
+        You are currently running node ${process.version}`)
+    }
+
     let appParams: AppInfo
     try {
       const appYaml = fs.readFileSync(appFile, 'utf8')

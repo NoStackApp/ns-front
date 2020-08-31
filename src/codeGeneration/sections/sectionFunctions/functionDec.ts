@@ -1,4 +1,4 @@
-import {formTypes, nodeTypes} from '../../constants'
+import {formTypes, nodeTypes} from '../../../constants'
 
 const Handlebars = require('handlebars')
 const H = require('just-handlebars-helpers')
@@ -273,7 +273,7 @@ function {{component}}({
   // ns__custom_start {{tempDetails}} beginning
   // ns__custom_end {{tempDetails}} beginning
 
-  {{{CHILDREN_CONSTANT_DECLARATIONS}}}
+  {{{childrenConstantDeclarations}}}
 
   // ns__custom_start {{tempDetails}} beforeReturn
   // ns__custom_end {{tempDetails}} beforeReturn
@@ -394,7 +394,7 @@ function {{component}}({
       {/* ns__end_section {{tempDetails}} instanceValue */}
 
       {/* ns__start_section {{tempDetails}} childrenList */}
-      {{{CHILDREN_BODY_LIST}}}
+      {{{childrenBodyList}}}
       {/* ns__end_section {{tempDetails}} childrenList */}
 
       {/* ns__custom_start {{tempDetails}} renderEnding */}

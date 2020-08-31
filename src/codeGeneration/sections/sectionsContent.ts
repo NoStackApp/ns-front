@@ -8,14 +8,14 @@ import {
   relationshipsForSource,
   singularName,
 } from '../../tools/inflections'
-import {beginningOfFile} from './beginningOfFile'
-import {compose} from './compose'
-import {functionDec} from './functionDec'
-import {handlers} from './handlers'
-import {proptypes} from './propTypes'
-import {styling} from './styling'
-import {imports} from './imports'
-import {button} from './button'
+import {beginningOfFile} from './sectionFunctions/beginningOfFile'
+import {compose} from './sectionFunctions/compose'
+import {functionDec} from './sectionFunctions/functionDec'
+import {handlers} from './sectionFunctions/handlers'
+import {proptypes} from './sectionFunctions/propTypes'
+import {styling} from './sectionFunctions/styling'
+import {imports} from './sectionFunctions/imports'
+import {button} from './sectionFunctions/button'
 
 const Handlebars = require('handlebars')
 const inflection = require('inflection')
@@ -47,7 +47,7 @@ const getComponentName = (type: string, componentType: string) => {
 
 // const isCreationType = (componentType: string) => componentType === formTypes.CREATION;
 
-const fileInfo = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
+const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
 
 const singleChildCreationCodeTemplate = Handlebars.compile(`
 {{#children}}
@@ -130,26 +130,26 @@ import {{childComponent}} from '../../{{singularConnected}}/{{childComponent}}';
 {{/connectedChildren}}
 `)
 
-export const replacementTags = (
+export const sectionsContent = (
   type: string,
-  source: string,
-  currentStack: StackInfo,
+  unit: string,
+  stackInfo: StackInfo,
   boilerPlateInfo: BoilerPlateInfoType,
 ) => {
   // we set children and connectedChildren, then derive all of the tag values to pass to the boilerplate templates.
-  const sourceInfo = currentStack.sources[source]
-  const typeSourceInfo = currentStack.types[type].sources[source]
-  const {parentType} = typeSourceInfo
+  const unitInfo = stackInfo.sources[unit]
+  const typeUnitInfo = stackInfo.types[type].sources[unit]
+  const {parentType} = typeUnitInfo
 
-  const children = sourceInfo.selectedTree[type]
+  const children = unitInfo.selectedTree[type]
   // console.log(`children for type ${type} = ${JSON.stringify(children)}`)
-  const connectedSource: string = sourceInfo.connections[type]
-  const constraintsInfo = sourceInfo.constraints
+  const connectedUnit: string = unitInfo.connections[type]
+  const constraintsInfo = unitInfo.constraints
 
   let connectedChildren: TreeTypeChildrenList = {}
-  if (connectedSource) {
+  if (connectedUnit) {
     connectedChildren = {
-      ...currentStack.sources[connectedSource].tree[type],
+      ...stackInfo.sources[connectedUnit].tree[type],
     }
   }
 
@@ -158,8 +158,8 @@ export const replacementTags = (
   if (boilerPlateInfo.nodeType === nodeTypes.ROOT) {
     children.map(
       child => {
-        const childInfo = currentStack.types[child]
-        const assnInfo = childInfo.sources[source]
+        const childInfo = stackInfo.types[child]
+        const assnInfo = childInfo.sources[unit]
         if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED) {
           refetchQueriesLine = ''
         }
@@ -171,14 +171,14 @@ export const replacementTags = (
   let constraintValue = 'ignoredParameter'
   Object.keys(constraintsInfo).map(key => {
     if (constraintsInfo[key].constraintType === 'ID') {
-      if (constraintsInfo[key].typeName === parentType || sourceInfo.selectionRoot) {
+      if (constraintsInfo[key].typeName === parentType || unitInfo.selectionRoot) {
         constraintValue = constraintsInfo[key].constraintValue
       }
     }
   })
 
-  const tempDetails = fileInfo({
-    unitName: source,
+  const tempDetails = fileInfoString({
+    unitName: unit,
     component: getComponentName(type, boilerPlateInfo.formType),
   }) + ', loc:'
 
@@ -187,8 +187,8 @@ export const replacementTags = (
 
   const childrenBodyList = childrenBodyTemplate({
     children: children.map(child => {
-      const childInfo = currentStack.types[child]
-      const assnInfo = childInfo.sources[source]
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
         return {
           nonProperty: true,
@@ -216,8 +216,8 @@ export const replacementTags = (
 
   const childrenImportList = childrenImportsTemplate({
     children: children.map(child => {
-      const childInfo = currentStack.types[child]
-      const assnInfo = childInfo.sources[source]
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
         return {childComponent: pluralName(child)}
       return {childComponent: singularName(child)}
@@ -225,7 +225,7 @@ export const replacementTags = (
   }) + connectedChildrenImportsTemplate(
     {
       connectedChildren: Object.keys(connectedChildren).map((child: string) => {
-        const singularConnected = singularName(connectedSource)
+        const singularConnected = singularName(connectedUnit)
         if (connectedChildren[child] !== associationTypes.SINGLE_REQUIRED)
           return {childComponent: pluralName(child), singularConnected}
         return {childComponent: singularName(child), singularConnected}
@@ -235,31 +235,77 @@ export const replacementTags = (
 
   const SingularName = singularName(type)
   const PluralName = pluralName(type)
-  const typeSpecifier = allCaps(`${type}_for_${source}`)
+  const typeSpecifier = allCaps(`${type}_for_${unit}`)
 
   const singleChildrenParams = singleChildrenParamsTemplate({
     children: children.map(child => {
-      const childInfo = currentStack.types[child]
-      const assnInfo = childInfo.sources[source]
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childSingular: singularName(child)}
     }),
   })
   const actionIdsForSingleChildren = actionIdsForSingleChildrenTemplate({
     children: children.map(child => {
-      const childInfo = currentStack.types[child]
-      const assnInfo = childInfo.sources[source]
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-        return {childAllCaps: allCaps(child), sourceAllCaps: allCaps(source)}
+        return {childAllCaps: allCaps(child), sourceAllCaps: allCaps(unit)}
     }).filter(Boolean),
   })
   const typeIdsForSingleChildren = typeIdsForSingleChildrenTemplate({
     children: children.map(child => {
-      const childInfo = currentStack.types[child]
-      const assnInfo = childInfo.sources[source]
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
       if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {property: true, childAllCaps: allCaps(child)}
     }),
+  })
+
+  const childrenConstantDeclarations = childrenConstantDeclarationsTemplate({
+    children: children.map(child => {
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
+      if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
+        return {
+          nonProperty: true,
+          childAllCaps: allCaps(child),
+          child,
+          type,
+          pluralChild: pluralLowercaseName(child),
+        }
+      return {
+        nonProperty: false,
+        childAllCaps: allCaps(child),
+        child,
+        type,
+      }
+    }),
+  })
+
+  const childrenTypeList = childrenTypeListTemplate({
+    children: children.map(child => {
+      return {childAllCaps: allCaps(child)}
+    }),
+  })
+
+  const singleChildrenComposeStatements = singleChildrenComposeStatementsTemplate({
+    children: children.map(child => {
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
+      // const isNotLast: boolean = numberOfChildren > index + 1
+      // console.log(`for type ${type}, for child ${child}, isNotLast=${isNotLast}`)
+      // if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
+      //   return {property: true, childSingular: singularName(child), isNotLast}
+
+      if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
+        return {property: true, childSingular: singularName(child)}
+    }),
+  })
+
+  const fileInfo = fileInfoString({
+    unitName: unit,
+    component: getComponentName(type, boilerPlateInfo.formType),
   })
 
   const names = {
@@ -269,109 +315,38 @@ export const replacementTags = (
     pluralLowercase: pluralLowercaseName(type),
     parent: parentType,
     source: {
-      name: source,
-      allCaps: allCaps(source),
-      constant: `SOURCE_${allCaps(source)}_ID`,
-      relationships: relationshipsForSource(source),
-      query: queryForSource(source),
+      name: unit,
+      allCaps: allCaps(unit),
+      constant: `SOURCE_${allCaps(unit)}_ID`,
+      relationships: relationshipsForSource(unit),
+      query: queryForSource(unit),
     },
   }
 
-  const tags = {
-    Unit: source,
-    SingularName,
-    PluralName,
-    PluralNameLowercase: pluralLowercaseName(type),
-    SingularNameLowercase: type,
-    SingularSourceLowercase: source,
-    SOURCE_ID_CONSTANT: sourceInfo.const,
-    RELATIONSHIPS_NAME: relationshipsForSource(source),
-    SOURCE_QUERY_NAME: queryForSource(source),
-    SingularNameAllCaps: allCaps(type),
-    SingularForRelationshipAllCaps: allCaps(`${type}_for_${source}`),
-    CHILDREN_IMPORT_LIST: childrenImportList,
-    ChildrenTypeList: childrenTypeListTemplate({
-      children: children.map(child => {
-        return {childAllCaps: allCaps(child)}
-      }),
-    }),
-    CHILDREN_BODY_LIST: childrenBodyList,
-    CHILDREN_CONSTANT_DECLARATIONS: childrenConstantDeclarationsTemplate({
-      children: children.map(child => {
-        const childInfo = currentStack.types[child]
-        const assnInfo = childInfo.sources[source]
-        if (assnInfo.assnType !== associationTypes.SINGLE_REQUIRED)
-          return {
-            nonProperty: true,
-            childAllCaps: allCaps(child),
-            child,
-            type,
-            pluralChild: pluralLowercaseName(child),
-          }
+  const singleChildCreationCode = singleChildCreationCodeTemplate({
+    children: children.map(child => {
+      const childInfo = stackInfo.types[child]
+      const assnInfo = childInfo.sources[unit]
+      if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
         return {
-          nonProperty: false,
+          property: true,
+          singularChild: singularName(child),
           childAllCaps: allCaps(child),
-          child,
-          type,
+          sourceAllCaps: allCaps(unit),
+          singularParent: singularName(type),
         }
-      }),
     }),
-    CONSTRAINT_VALUE: constraintValue,
-    SingularParentName: parentType,
-    SingularParentNameAllCaps: allCaps(parentType),
-    ACTION_IDS_FOR_SINGLE_CHILDREN: actionIdsForSingleChildren,
-    TYPE_IDS_FOR_SINGLE_CHILDREN: typeIdsForSingleChildren,
-    SINGLE_CHILDREN_CREATION_CODE: singleChildCreationCodeTemplate({
-      children: children.map(child => {
-        const childInfo = currentStack.types[child]
-        const assnInfo = childInfo.sources[source]
-        if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-          return {
-            property: true,
-            singularChild: singularName(child),
-            childAllCaps: allCaps(child),
-            sourceAllCaps: allCaps(source),
-            singularParent: singularName(type),
-          }
-      }),
-    }),
-    // SINGLE_CHILDREN_COMPOSE_STATEMENTS: singleChildrenComposeStatementsTemplate({
-    //   children: children.map(child => {
-    //     const childInfo = currentStack.types[child]
-    //     const assnInfo = childInfo.sources[source]
-    //     if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-    //       return {property: true, childSingular: singularName(child)}
-    //   }),
-    // }),
-    SINGLE_CHILDREN_PARAMS: singleChildrenParams,
-    UPDATE_ON_ADD_LINE: refetchQueriesLine,
-    SelectionSource: typeSourceInfo.sourceUnit ?
-      singularName(typeSourceInfo.sourceUnit) :
-      null,
+  })
+
+  return {
     START_OF_FILE: beginningOfFile({
-      fileInfo: fileInfo({
-        unitName: source,
-        component: getComponentName(type, boilerPlateInfo.formType),
-      }),
+      fileInfo,
       defaultContent: '\'use strict\';',
     }),
     COMPOSE_CLAUSE: compose({
-      // isCreationForm: isCreationType(boilerPlateInfo.formType),
-      formType: boilerPlateInfo.formType,
-      SingularName: singularName(type),
-      SINGLE_CHILDREN_COMPOSE_STATEMENTS: singleChildrenComposeStatementsTemplate({
-        children: children.map(child => {
-          const childInfo = currentStack.types[child]
-          const assnInfo = childInfo.sources[source]
-          // const isNotLast: boolean = numberOfChildren > index + 1
-          // console.log(`for type ${type}, for child ${child}, isNotLast=${isNotLast}`)
-          // if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-          //   return {property: true, childSingular: singularName(child), isNotLast}
-
-          if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-            return {property: true, childSingular: singularName(child)}
-        }),
-      }),
+      boilerPlateInfo,
+      singleChildrenComposeStatements,
+      names,
     }),
     STYLING_SECTION: styling({
       boilerPlateInfo,
@@ -393,11 +368,7 @@ export const replacementTags = (
       names,
       childrenImportList,
       typeSpecifier,
-      childrenTypeList: childrenTypeListTemplate({
-        children: children.map(child => {
-          return {childAllCaps: allCaps(child)}
-        }),
-      }),
+      childrenTypeList,
       actionIdsForSingleChildren,
       typeIdsForSingleChildren,
     }),
@@ -414,22 +385,9 @@ export const replacementTags = (
       tempDetails,
       SingularName,
       typeSpecifier,
-      refreshQueriesLine: refetchQueriesLine,
+      refetchQueriesLine,
       SingularNameLowercase: type,
-      SINGLE_CHILDREN_CREATION_CODE: singleChildCreationCodeTemplate({
-        children: children.map(child => {
-          const childInfo = currentStack.types[child]
-          const assnInfo = childInfo.sources[source]
-          if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED)
-            return {
-              property: true,
-              singularChild: singularName(child),
-              childAllCaps: allCaps(child),
-              sourceAllCaps: allCaps(source),
-              singularParent: singularName(type),
-            }
-        }),
-      }),
+      singleChildCreationCode,
     }),
     FUNCTION_SECTION: functionDec({
       boilerPlateInfo,
@@ -438,12 +396,11 @@ export const replacementTags = (
       tempDetails,
       names,
       typeSpecifier,
-      CHILDREN_BODY_LIST: childrenBodyList,
+      childrenBodyList,
+      childrenConstantDeclarations,
       singleChildrenParams,
       refetchQueriesLine,
       constraintValue,
     }),
   }
-
-  return tags
 }

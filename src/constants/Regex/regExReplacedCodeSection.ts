@@ -1,6 +1,5 @@
-const commentOpen = '(\\/\\/|{\\/\\*)'
-const endOfLine = '( \\*\\/\\}\\n|\\n)'
-const content = '((.|\n)*?)'
+import {commentOpen, content, endOfLine} from './regExShared'
+
 const firstLineBody = `${commentOpen} ns__start_replacement (\\w*)${endOfLine}`
 const fullRegExBody = `${firstLineBody}${content}${commentOpen} ns__end_replacement \\2${endOfLine}`
 

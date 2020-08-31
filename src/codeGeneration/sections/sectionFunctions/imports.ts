@@ -1,4 +1,4 @@
-import {formTypes, nodeTypes} from '../../constants'
+import {formTypes, nodeTypes} from '../../../constants'
 
 const Handlebars = require('handlebars')
 const H = require('just-handlebars-helpers')

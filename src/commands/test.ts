@@ -8,6 +8,7 @@ import {generateTestCode} from '../codeGeneration/generateTestCode'
 import {insertAddedCode} from '../codeGeneration/insertAddedCode'
 import {storeAddedCode} from '../codeGeneration/storeAddedCode'
 import {AppInfo} from '../constants/types'
+import {checkDirectories} from '../testing/checkDirectories'
 import {discrepanciesFound} from '../testing/discrepanciesFound'
 import execa = require('execa')
 
@@ -68,8 +69,8 @@ your code.`)
 
     try {
       await fs.remove(testDir)
-      await fs.ensureDir(`${testDir}/src`)
-      await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
+      await fs.ensureDir(`${testDir}/src/components`)
+      // await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
       await generateTestCode(testDir, userClass, jsonPath, appName)
     } catch (error) {
       throw error
@@ -91,6 +92,7 @@ your code.`)
         const subprocess = execa('diff', ['-rbBw', originalUnit, generatedUnit])
         subprocess.stdout.pipe(fs.createWriteStream(diffsFile))
         await discrepanciesFound(diffsFile)
+        await checkDirectories(appDir)
       })
     } catch (error) {
       throw error

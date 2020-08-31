@@ -94,15 +94,15 @@ export const sectionsContent = (
   // we set children and connectedChildren, then derive all of the tag values
   // to pass to the boilerplate templates.
 
+  // content
+  const typeSpecifier = allCaps(`${type}_for_${unit}`)
+
   let connectedChildren: TreeTypeChildrenList = {}
   if (connectedUnit) {
     connectedChildren = {
       ...connectedUnitInfo.tree[type],
     }
   }
-
-  // content
-  const typeSpecifier = allCaps(`${type}_for_${unit}`)
 
   // updateOnAddLine is 'refetchQueries' unless the current typeName is a property.
   let refetchQueriesLine = 'refetchQueries,'

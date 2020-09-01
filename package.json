@@ -1,7 +1,7 @@
 {
   "name": "ns-front",
   "description": "Tools for front end no stack developers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "YizYah @YizYah",
   "bin": {
     "nsfront": "./bin/run"

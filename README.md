@@ -18,7 +18,7 @@ $ npm install -g ns-front
 $ nsfront COMMAND
 running command...
 $ nsfront (-v|--version|version)
-ns-front/0.1.0 linux-x64 node-v14.9.0
+ns-front/0.2.0 linux-x64 node-v14.9.0
 $ nsfront --help [COMMAND]
 USAGE
   $ nsfront COMMAND
@@ -72,7 +72,7 @@ EXAMPLE
   $ nsfront test -a ~/temp/myApp
 ```
 
-_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.1.0/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.2.0/src/commands/test.ts)_
 <!-- commandsstop -->
 
 ### Working with Test Results

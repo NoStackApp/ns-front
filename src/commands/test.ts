@@ -1,16 +1,17 @@
 import {Command, flags} from '@oclif/command'
-import {isRequired} from '../isRequired'
-
-const fs   = require('fs-extra')
-const yaml = require('js-yaml')
-
 import {generateTestCode} from '../codeGeneration/generateTestCode'
 import {insertAddedCode} from '../codeGeneration/insertAddedCode'
 import {storeAddedCode} from '../codeGeneration/storeAddedCode'
 import {AppInfo} from '../constants/types'
+import {isRequired} from '../isRequired'
 import {checkDirectories} from '../testing/checkDirectories'
-import {discrepanciesFound} from '../testing/discrepanciesFound'
-import execa = require('execa')
+import {checkStaticFiles} from '../testing/checkStaticFiles'
+import {initializeLogFile} from '../testing/initializeLogFile'
+import {logEntry} from '../testing/logEntry'
+import {checkGeneratedUnits} from '../testing/checkGeneratedUnits'
+
+const fs = require('fs-extra')
+const yaml = require('js-yaml')
 
 const frontEndRulesDoc = 'https://bit.ly/nsFrontEndRules'
 
@@ -22,19 +23,19 @@ rules, please see ${frontEndRulesDoc}.  This is actually one of the tests
 conducted by NoStack to gauge the quality of submitted code.  Essentially, the
 test generates a new version of the code and then simply compares it against
 your current version.  If there are differences, then there is a problem with
-your code.`)
+your code.`);
 
   static examples = [
     '$ nsfront test -a ~/temp/myApp',
-  ]
+  ];
 
   static flags = {
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     appDir: flags.string({char: 'a', description: 'application directory'}),
-  }
+  };
 
-  static args = []
+  static args = [];
 
   async run() {
     const {flags} = this.parse(Test)
@@ -82,24 +83,53 @@ your code.`)
     const originalComps = `${appDir}/src/components`
     const generatedComps = `${testDir}/src/components`
     const diffsDir = `${testDir}/diffs`
+    const logFile = `${diffsDir}/tests.log`
+    let problemsFound = false
 
     try {
       fs.ensureDir(diffsDir)
-      units.map(async (unit: string) => {
-        const diffsFile = `${diffsDir}/${unit}`
-        const originalUnit = `${originalComps}/${unit}`
-        const generatedUnit = `${generatedComps}/${unit}`
-        const subprocess = execa('diff', ['-rbBw', originalUnit, generatedUnit])
-        subprocess.stdout.pipe(fs.createWriteStream(diffsFile))
-        await discrepanciesFound(diffsFile)
-        await checkDirectories(appDir)
-      })
+      await initializeLogFile(logFile)
+      problemsFound = await checkGeneratedUnits(
+        units,
+        diffsDir,
+        originalComps,
+        generatedComps,
+        logFile,
+        problemsFound,
+      )
+
+      problemsFound = await checkStaticFiles(
+        diffsDir,
+        appDir,
+        logFile,
+        problemsFound,
+      )
+
+      await checkDirectories(appDir, logFile, problemsFound)
     } catch (error) {
-      throw error
+      this.error(error)
     }
-    this.log(`done running the test. To see any issues, you can look
-in the directory ${diffsDir}.  Any discrepancy shown is a problem.
-    If it's empty, then your code satisfies the no-stack requirement for
-    being regenerable.  If not, see ${frontEndRulesDoc} for more info.`)
+
+    let logMessage = `
+You will find all files showing discrepancies in the directory ${diffsDir}.
+Any discrepancy shown is a problem. See ${frontEndRulesDoc} for more info
+about NoStack compatible code.  For specific instructions to resolve
+discrepancies, see https://www.npmjs.com/package/ns-front#working-with-test-results. `
+    if (problemsFound) {
+      this.log(`
+
+:( The app did not pass the tests. :(
+See the log file ${logFile} or the above messages for more information.`)
+      await logEntry(logFile, `
+
+:( The app did not pass the tests. :(`, false)
+      await logEntry(logFile, logMessage, true)
+      return 1
+    }
+
+    logMessage = `
+:) The app is passing all tests! :)`
+    await logEntry(logFile, logMessage, true)
+    return 0
   }
 }

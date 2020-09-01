@@ -1,7 +1,7 @@
+import {logEntry} from './logEntry'
+
 const fs = require('fs-extra')
 const diff = require('arr-diff')
-// const getDirectories = (source: string) =>
-//   fs.readdirSync(source)
 
 const permittedSrcDirectories = [
   'App.js',
@@ -37,8 +37,11 @@ const permittedCompDirectories = [
   'source-props',
 ]
 
-export async function checkDirectories(appDir: string) {
-  let problemsFound = false
+export async function checkDirectories(
+  appDir: string,
+  logFile: string,
+  problemsFound: boolean,
+) {
   const testDir = `${appDir}.test`
   const appSrc = `${appDir}/src`
   const testSrc = `${testDir}/src`
@@ -56,13 +59,13 @@ export async function checkDirectories(appDir: string) {
 
     if (extraFiles.length > 0) {
       problemsFound = true
-      // eslint-disable-next-line no-console
-      console.log(`
+      const logMessage = `
 **** extra files found in the ${appDir}/src directory!!
 You have the following files or directories that should not be found:
 \t${extraFiles.join('\n\t')}
 If you have extra code, it belongs in the custom directory.  Code specific to
-state can be stored in the context directory.****`)
+state can be stored in the context directory.****`
+      await logEntry(logFile, logMessage, true)
     }
 
     const extraComponentFiles = diff(
@@ -71,17 +74,16 @@ state can be stored in the context directory.****`)
 
     if (extraComponentFiles.length > 0) {
       problemsFound = true
-      // eslint-disable-next-line no-console
-      console.log(`
+      const logMessage = `
 **** extra files found in the ${appComponents} directory!!
 You have the following files or directories that should not be found:
 \t${extraComponentFiles.join('\n\t')}
 If you have extra code, it belongs in the custom directory.  Code specific to
-state can be stored in the context directory.****`)
+state can be stored in the context directory.****`
+      await logEntry(logFile, logMessage, true)
     }
   } catch (error) {
     throw error
   }
   return problemsFound
 }
-

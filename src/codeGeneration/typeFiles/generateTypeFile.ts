@@ -9,13 +9,14 @@ import {generic} from './generic'
 import {boilerPlateToDir} from './boilderPlateToDir'
 
 const fs = require('fs-extra')
+// const fetch = require('node-fetch')
+// const Handlebars = require('handlebars')
 
 // const boilerPlateFromInfo = (boilerPlateInfo: BoilerPlateInfoType) =>
 //   boilerPlates[boilerPlateInfo.formType + boilerPlateInfo.dataType + boilerPlateInfo.nodeType]
 
 export async function generateTypeFile(type: string, source: string, boilerPlateInfo: BoilerPlateInfoType, currentStack: StackInfo) {
   const dir = boilerPlateToDir(type, boilerPlateInfo.formType)
-  // console.log(`in generateTypeFile, dir=${dir}`)
 
   const path = `${compDir}/${singularName(source)}/${dir}`
   const dirList = [
@@ -30,9 +31,21 @@ export async function generateTypeFile(type: string, source: string, boilerPlate
   // console.log(`options is: ${JSON.stringify(options)}`)
   await makeDirs(dirList)
 
+  // const unitTemplate = 'https://raw.githubusercontent.com/YizYah/basicNsFrontTemplate/master/generic.txt'
+  // let specificFileTemplate = function (tags: any) {
+  //   // eslint-disable-next-line no-console
+  //   console.error(`template not fetched.  This could be due to a uri error
+  //   tags = ${JSON.stringify(tags)}`)
+  //   throw new Error('template not fetched.  This could be due to a uri error')
+  // }
   try {
-    // const specificFileTemplate = Handlebars.compile(await fs.readFile(`${boilerplateDir}/${boilerPlate}.js`, 'utf-8'))
-    // console.log(`tags.START_OF_FILE=${tags.START_OF_FILE}`)
+    // await fetch(unitTemplate)
+    // .then((res: any) => res.text())
+    // .then((body: any) => {
+    //   specificFileTemplate = Handlebars.compile(body)
+    // })
+
+    // await fs.outputFile(`${path}/index.jsx`, specificFileTemplate(tags))
     await fs.outputFile(`${path}/index.jsx`, generic(tags))
   } catch (error) {
     throw new Error(`error with generateFromBoilerPlate: ${error}`)

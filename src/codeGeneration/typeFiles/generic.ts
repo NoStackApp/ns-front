@@ -6,7 +6,7 @@ import {formTypes} from '../../constants'
 H.registerHelpers(Handlebars)
 
 export const generic = Handlebars.compile(`
-{{{START_OF_FILE}}}
+{{> START_OF_FILE fileInfo=fileInfo}}
 {{{IMPORTS_SECTION}}}
 {{{STYLING_SECTION}}}
 {{{BUTTON_SECTION}}}

@@ -8,27 +8,27 @@ import {
   relationshipsForSource,
   singularName,
 } from '../../tools/inflections'
-import {beginningOfFile} from './sectionFunctions/beginningOfFile'
-import {button} from './sectionFunctions/button'
-import {compose} from './sectionFunctions/compose'
-import {functionDec} from './sectionFunctions/functionDec'
-import {handlers} from './sectionFunctions/handlers'
-import {imports} from './sectionFunctions/imports'
-import {proptypes} from './sectionFunctions/propTypes'
-import {styling} from './sectionFunctions/styling'
-import {
-  actionIdsForSingleChildrenTemplate,
-  childrenBodyTemplate,
-  childrenConstantDeclarationsTemplate,
-  childrenImportsTemplate,
-  childrenTypeListTemplate,
-  connectedChildrenBodyTemplate,
-  connectedChildrenImportsTemplate,
-  singleChildCreationCodeTemplate,
-  singleChildrenComposeStatementsTemplate,
-  singleChildrenParamsTemplate,
-  typeIdsForSingleChildrenTemplate,
-} from './subTemplates'
+// import {beginningOfFile} from './sectionFunctions/beginningOfFile'
+// import {button} from './sectionFunctions/button'
+// import {compose} from './sectionFunctions/compose'
+// import {functionDec} from './sectionFunctions/functionDec'
+// import {handlers} from './sectionFunctions/handlers'
+// import {imports} from './sectionFunctions/imports'
+// import {proptypes} from './sectionFunctions/propTypes'
+// import {styling} from './sectionFunctions/styling'
+// import {
+//   actionIdsForSingleChildrenTemplate,
+//   childrenBodyTemplate,
+//   childrenConstantDeclarationsTemplate,
+//   childrenImportsTemplate,
+//   childrenTypeListTemplate,
+//   connectedChildrenBodyTemplate,
+//   connectedChildrenImportsTemplate,
+//   singleChildCreationCodeTemplate,
+//   singleChildrenComposeStatementsTemplate,
+//   singleChildrenParamsTemplate,
+//   typeIdsForSingleChildrenTemplate,
+// } from './subTemplates'
 
 const Handlebars = require('handlebars')
 const inflection = require('inflection')
@@ -54,7 +54,7 @@ const getComponentName = (type: string, componentType: string) => {
 
 const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
 
-export const sectionsContent = (
+export const genericContext = (
   type: string,
   unit: string,
   stackInfo: StackInfo,
@@ -184,90 +184,17 @@ export const sectionsContent = (
       }
   }).filter(Boolean)
 
-  // calls to templates
-  const childrenBodyList = childrenBodyTemplate({childrenInfo}) +
-    connectedChildrenBodyTemplate({connectedChildrenInfo})
-  const childrenImportList =
-    childrenImportsTemplate({childrenInfo}) +
-    connectedChildrenImportsTemplate({connectedChildrenInfo})
-  const singleChildrenParams =
-    singleChildrenParamsTemplate({singleChildrenInfo})
-  const actionIdsForSingleChildren =
-    actionIdsForSingleChildrenTemplate({singleChildrenInfo})
-  const typeIdsForSingleChildren =
-    typeIdsForSingleChildrenTemplate({singleChildrenInfo})
-  const childrenConstantDeclarations =
-    childrenConstantDeclarationsTemplate({childrenInfo})
-  const childrenTypeList = childrenTypeListTemplate({childrenInfo})
-  const singleChildrenComposeStatements =
-    singleChildrenComposeStatementsTemplate({singleChildrenInfo})
-  const singleChildCreationCode =
-    singleChildCreationCodeTemplate({singleChildrenInfo})
-
   return {
+    component,
+    instance,
+    names,
     fileInfo,
-    START_OF_FILE: beginningOfFile({
-      fileInfo,
-      defaultContent: '\'use strict\';',
-    }),
-    COMPOSE_CLAUSE: compose({
-      boilerPlateInfo,
-      singleChildrenComposeStatements,
-      names,
-    }),
-    STYLING_SECTION: styling({
-      boilerPlateInfo,
-      tempDetails,
-      names,
-    }),
-    PROP_TYPES_SECTION: proptypes({
-      boilerPlateInfo,
-      component,
-      instance,
-      tempDetails,
-      names,
-    }),
-    IMPORTS_SECTION: imports({
-      boilerPlateInfo,
-      component,
-      instance,
-      tempDetails,
-      names,
-      childrenImportList,
-      typeSpecifier,
-      childrenTypeList,
-      actionIdsForSingleChildren,
-      typeIdsForSingleChildren,
-    }),
-    BUTTON_SECTION: button({
-      boilerPlateInfo,
-      component,
-      instance,
-      tempDetails,
-    }),
-    HANDLERS_SECTION: handlers({
-      boilerPlateInfo,
-      component,
-      instance,
-      tempDetails,
-      SingularName,
-      typeSpecifier,
-      refetchQueriesLine,
-      SingularNameLowercase: type,
-      singleChildCreationCode,
-    }),
-    FUNCTION_SECTION: functionDec({
-      boilerPlateInfo,
-      component,
-      instance,
-      tempDetails,
-      names,
-      typeSpecifier,
-      childrenBodyList,
-      childrenConstantDeclarations,
-      singleChildrenParams,
-      refetchQueriesLine,
-      constraintValue,
-    }),
+    tempDetails,
+    typeSpecifier,
+    refetchQueriesLine,
+    constraintValue,
+    childrenInfo,
+    connectedChildrenInfo,
+    singleChildrenInfo,
   }
 }

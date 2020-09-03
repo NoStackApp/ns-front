@@ -76,7 +76,6 @@ your code.`);
     } catch (error) {
       throw error
     }
-
     const addedCodeDoc = `${docsDir}/addedCode.json`
     await insertAddedCode(testDir, addedCodeDoc)
 
@@ -89,6 +88,7 @@ your code.`);
     try {
       fs.ensureDir(diffsDir)
       await initializeLogFile(logFile)
+
       problemsFound = await checkGeneratedUnits(
         units,
         diffsDir,

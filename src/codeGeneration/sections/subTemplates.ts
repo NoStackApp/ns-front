@@ -1,12 +1,13 @@
 const Handlebars = require('handlebars')
 
 export const connectedChildrenImportsTemplate = Handlebars.compile(`
-{{#connectedChildren}}
+{{#connectedChildrenInfo}}
 import {{childComponent}} from '../../{{singularConnected}}/{{childComponent}}';
-{{/connectedChildren}}
+{{/connectedChildrenInfo}}
 `)
+
 export const singleChildCreationCodeTemplate = Handlebars.compile(`
-{{#children}}
+{{#singleChildrenInfo}}
 {{#if property}}
     await create{{singularChild}}({
       variables: {
@@ -20,10 +21,11 @@ export const singleChildCreationCodeTemplate = Handlebars.compile(`
       refetchQueries,
     });
 {{/if}}
-{{/children}}
+{{/singleChildrenInfo}}
 `)
+
 export const childrenBodyTemplate = Handlebars.compile(`
-{{#children}}
+{{#childrenInfo}}
 {{#if nonProperty}}
 < {{childComponent}}
               {{childPlural}} = { {{childPlural}} }
@@ -39,37 +41,45 @@ export const childrenBodyTemplate = Handlebars.compile(`
               refetchQueries={refetchQueries}
       />
 {{/if}}
-{{/children}}
+{{/childrenInfo}}
 `)
+
 export const childrenConstantDeclarationsTemplate = Handlebars.compile(`
-{{#children}}
+{{#childrenInfo}}
   const {{child}}Data = {{type}}.children && {{type}}.children.find(child => child.typeId === TYPE_{{childAllCaps}}_ID);
 {{#if nonProperty}}
   const {{pluralChild}} = {{child}}Data ? {{child}}Data.instances : [];
 {{else}}
   const {{child}} = {{child}}Data ? {{child}}Data.instances[0] : [];
 {{/if}}
-{{/children}}
+{{/childrenInfo}}
 `)
+
 export const childrenTypeListTemplate = Handlebars.compile(
-  '{{#children}},\n' +
-  'TYPE_{{childAllCaps}}_ID{{/children}}')
+  '{{#childrenInfo}},\n' +
+  'TYPE_{{childAllCaps}}_ID{{/childrenInfo}}')
+
 export const typeIdsForSingleChildrenTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, TYPE_{{childAllCaps}}_ID{{/if}}{{/children}}')
+  '{{#singleChildrenInfo}}{{#if property}}, TYPE_{{childAllCaps}}_ID{{/if}}{{/singleChildrenInfo}}')
+
 export const singleChildrenParamsTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, create{{childSingular}}{{/if}}{{/children}}')
+  '{{#singleChildrenInfo}}{{#if property}}, create{{childSingular}}{{/if}}{{/singleChildrenInfo}}')
+
 export const singleChildrenComposeStatementsTemplate = Handlebars.compile(
-  '{{#children}}{{#if property}}, graphql(EXECUTE_ACTION, { name: \'create{{childSingular}}\' }){{/if}}{{#if notIsLast}}, {{/if}}{{/children}}')
+  '{{#singleChildrenInfo}}{{#if property}}, graphql(EXECUTE_ACTION, { name: \'create{{singularChild}}\' }){{/if}}{{#if notIsLast}}, {{/if}}{{/singleChildrenInfo}}')
+
 export const childrenImportsTemplate = Handlebars.compile(`
-{{#children}}
+{{#childrenInfo}}
 import {{childComponent}} from '../{{childComponent}}';
-{{/children}}
+{{/childrenInfo}}
 `)
+
 export const actionIdsForSingleChildrenTemplate = Handlebars.compile(
-  '{{#children}}, CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID{{/children}}',
+  '{{#singleChildrenInfo}}, CREATE_{{childAllCaps}}_FOR_{{sourceAllCaps}}_ACTION_ID{{/singleChildrenInfo}}',
 )
+
 export const connectedChildrenBodyTemplate = Handlebars.compile(`
-{{#connectedChildren}}
+{{#connectedChildrenInfo}}
 < {{childComponent}} {{type}}Id = { {{type}}.id} />
-{{/connectedChildren}}
+{{/connectedChildrenInfo}}
 `)

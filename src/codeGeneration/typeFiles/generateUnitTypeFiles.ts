@@ -7,6 +7,7 @@ export async function generateUnitTypeFiles(
   source: string,
   userClass: string,
   currentStack: StackInfo,
+  template: string
 ) {
   const sourceInfo = sources[source]
   const {owner} = sourceInfo
@@ -37,7 +38,15 @@ export async function generateUnitTypeFiles(
       const type = selectedTreeTypes[j]
       // console.log(`*** typeName=${typeName}`)
       // eslint-disable-next-line no-await-in-loop
-      await generateFilesForType(currentStack, type, source, selectionRoot, root, sourceInfo, highestLevel)
+      await generateFilesForType(
+        currentStack,
+        type,
+        source,
+        selectionRoot,
+        root,
+        sourceInfo,
+        highestLevel,
+        template)
     }
 
     // const joins = sourceInfo.joins;

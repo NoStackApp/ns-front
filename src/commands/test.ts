@@ -61,7 +61,7 @@ your code.`);
       throw error
     }
 
-    const {appName, userClass, units} = appParams
+    const {appName, userClass, units, template} = appParams
 
     // store added code before generating new code.
     await storeAddedCode(appDir)
@@ -72,7 +72,7 @@ your code.`);
       await fs.remove(testDir)
       await fs.ensureDir(`${testDir}/src/components`)
       // await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
-      await generateTestCode(testDir, userClass, jsonPath, appName)
+      await generateTestCode(testDir, userClass, jsonPath, appName, template)
     } catch (error) {
       throw error
     }

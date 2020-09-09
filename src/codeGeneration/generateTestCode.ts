@@ -14,6 +14,7 @@ export async function generateTestCode(
   userClass: string,
   jsonPath: string,
   appName: string,
+  template: string,
 ) {
   // console.log(`stacklocation=${appDir}/stack.json`)
   const currentStack: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
@@ -49,25 +50,25 @@ export async function generateTestCode(
   }
 
   try {
-    await generateAppTypeFiles(sources, userClass, currentStack)
+    await generateAppTypeFiles(sources, userClass, currentStack, template)
   } catch (error) {
     throw error
   }
 
-  // '--end-of-line auto',
-  // '--trailing-comma es5',
-  const prettierArgs = [
-    'prettier',
-    '--single-quote',
-    '--jsx-single-quote',
-    '--trailing-comma es5',
-    '--write',
-    `${appDir}/src/**/*.{js,jsx}`,
-  ]
-
-  try {
-    await execa('npx', prettierArgs)
-  } catch (error) {
-    throw error
-  }
+  // // '--end-of-line auto',
+  // // '--trailing-comma es5',
+  // const prettierArgs = [
+  //   'prettier',
+  //   '--single-quote',
+  //   '--jsx-single-quote',
+  //   // '--trailing-comma es5',
+  //   '--write',
+  //   `${appDir}/src/**/*.{js,jsx}`,
+  // ]
+  //
+  // try {
+  //   await execa('npx', prettierArgs)
+  // } catch (error) {
+  //   throw error
+  // }
 }

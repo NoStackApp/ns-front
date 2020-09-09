@@ -10,6 +10,7 @@ export async function generateFilesForType(
   root: string,
   sourceInfo: SourceInfo,
   highestLevel: string,
+  template: string,
 ) {
   const typeInfo = currentStack.types[type]
   const typeSourceInfo = typeInfo.sources[source]
@@ -37,16 +38,30 @@ export async function generateFilesForType(
   }
   // console.log(`*** typeName=${typeName}, assnType=${assnType}, nodeType=${nodeType}`)
 
+  // const templateLocation = '/home/yisroel/projects/nsBasicTemplate'
+  // const templateLocation = 'https://raw.githubusercontent.com/YizYah/basicNsFrontTemplate/master/'
   if (sourceUnit) {
     const selectionBoilerPlateInfo: BoilerPlateInfoType = {
       formType: formTypes.SELECTION,
       dataType,
       nodeType: nodeTypes.SELECTABLE,
     }
-    await generateTypeFile(type, sourceUnit, selectionBoilerPlateInfo, currentStack)
+    await generateTypeFile(
+      type,
+      sourceUnit,
+      selectionBoilerPlateInfo,
+      currentStack,
+      template
+    )
   }
 
-  await generateTypeFile(type, source, boilerPlateInfo, currentStack)
+  await generateTypeFile(
+    type,
+    source,
+    boilerPlateInfo,
+    currentStack,
+    template
+  )
 
   // console.log(`assnType=${assnType}`)
   if (assnType !== associationTypes.SINGLE_REQUIRED) {
@@ -56,13 +71,26 @@ export async function generateFilesForType(
       dataType,
       nodeType,
     }
-    await generateTypeFile(type, source, creationBoilerPlateInfo, currentStack)
+
+    await generateTypeFile(
+      type,
+      source,
+      creationBoilerPlateInfo,
+      currentStack,
+      template
+    )
 
     const singularBoilerPlateInfo = {
       formType: formTypes.LIST,
       dataType,
       nodeType,
     }
-    await generateTypeFile(type, source, singularBoilerPlateInfo, currentStack)
+    await generateTypeFile(
+      type,
+      source,
+      singularBoilerPlateInfo,
+      currentStack,
+      template
+    )
   }
 }

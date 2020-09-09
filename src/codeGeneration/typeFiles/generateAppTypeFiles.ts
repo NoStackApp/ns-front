@@ -1,7 +1,12 @@
 import {Sources, StackInfo} from '../../constants/types'
 import {generateUnitTypeFiles} from './generateUnitTypeFiles'
 
-export async function generateAppTypeFiles(units: Sources, userClass: string, currentStack: StackInfo) {
+export async function generateAppTypeFiles(
+  units: Sources,
+  userClass: string,
+  currentStack: StackInfo,
+  template: string,
+) {
   const unitKeys = Object.keys(units)
 
   let i
@@ -9,6 +14,6 @@ export async function generateAppTypeFiles(units: Sources, userClass: string, cu
     const unit = unitKeys[i]
 
     // eslint-disable-next-line no-await-in-loop
-    await generateUnitTypeFiles(units, unit, userClass, currentStack)
+    await generateUnitTypeFiles(units, unit, userClass, currentStack, template)
   }
 }

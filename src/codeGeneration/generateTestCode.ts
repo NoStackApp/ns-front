@@ -5,7 +5,7 @@ import {createHighestLevelFiles} from './createHighestLevelFiles'
 import {createQueryFile} from './createQueryFile'
 import {createTopProjectDirs, srcDir} from './createTopProjectDirs'
 import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
-import execa = require('execa');
+// import execa = require('execa');
 
 const fs = require('fs-extra')
 

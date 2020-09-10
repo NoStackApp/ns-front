@@ -184,6 +184,22 @@ export interface CustomCodeRepository {
 
 export interface AppInfo {
   appName: string;
+  template: string;
   userClass: string;
   units: [string];
 }
+
+// following is a recursive Directory type.  A directory can contain
+// either files or arrays of files/subdirectories.
+export interface Directory {
+  [key: string]: string | Directory;
+}
+
+interface ConfigurationDirectories {
+  components: string;
+  [key: string]: string;
+}
+export interface Configuration {
+  dirs: ConfigurationDirectories;
+}
+

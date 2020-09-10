@@ -1,9 +1,11 @@
-import {StackInfo} from '../constants/types'
+import {AppInfo, StackInfo} from '../constants/types'
+import {configuredDirs} from './configuredDirs'
 
 import {createConfigFile} from './createConfigFile'
-import {createHighestLevelFiles} from './createHighestLevelFiles'
+// import {createHighestLevelFiles} from './createHighestLevelFiles'
 import {createQueryFile} from './createQueryFile'
-import {createTopProjectDirs, srcDir} from './createTopProjectDirs'
+import {getConfiguration} from './getConfiguration'
+import {standardFiles} from './standardFiles'
 import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
 // import execa = require('execa');
 
@@ -11,46 +13,60 @@ const fs = require('fs-extra')
 
 export async function generateTestCode(
   appDir: string,
-  userClass: string,
+  appParams: AppInfo,
   jsonPath: string,
-  appName: string,
-  template: string,
 ) {
+  const srcDir = `${appDir}/src`
+  const {appName, userClass, units, template} = appParams
+
+  const config = await getConfiguration(template)
   // console.log(`stacklocation=${appDir}/stack.json`)
   const currentStack: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
 
   try {
-    await createTopProjectDirs(currentStack, appDir)
+    await standardFiles(template, appDir)
   } catch (error) {
-    throw error
+    // eslint-disable-next-line no-console
+    console.log(error)
+    throw new Error(`error in creating standard files: ${error}`)
+  }
+
+  try {
+    await configuredDirs(config, appDir, units)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error)
+    throw new Error(`error in creating configured dirs: ${error}`)
   }
 
   // console.log(`appDir=${appDir}`)
   // const appName = appNameFromPath(appDir)
-  const configText = await createConfigFile(currentStack, appName)
+  const configText = await createConfigFile(currentStack, appName, template)
   // console.log(`configText=${configText}`)
-  fs.outputFile(`${srcDir}/config/index.js`, configText)
+  await fs.outputFile(`${srcDir}/config/index.js`, configText)
 
-  try {
-    await createHighestLevelFiles(currentStack, appDir, userClass, appName)
-  } catch (error) {
-    throw new Error(`error in creating highest level files: ${error}`)
-  }
+  // try {
+  //   await createHighestLevelFiles(currentStack, appDir, userClass, appName)
+  // } catch (error) {
+  //   throw new Error(`error in creating highest level files: ${error}`)
+  // }
 
   const sources = currentStack.sources
 
   // mapObject
-
+  const compDir = `${srcDir}/components`
+  const sourcePropsDir = `${compDir}/source-props`
   try {
     await Promise.all(Object.keys(sources).map(async source => {
-      await createQueryFile(currentStack, source)
+      await createQueryFile(currentStack, source, sourcePropsDir)
     }))
   } catch (error) {
     throw new Error('error in creating top project directories')
   }
 
+  console.log('about to call generateAppTypeFiles.')
   try {
-    await generateAppTypeFiles(sources, userClass, currentStack, template)
+    await generateAppTypeFiles(sources, userClass, currentStack, template, compDir)
   } catch (error) {
     throw error
   }

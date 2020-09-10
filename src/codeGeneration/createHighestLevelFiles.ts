@@ -1,7 +1,7 @@
 import {boilerplateDir} from '../constants'
 import {StackInfo} from '../constants/types'
 
-import {compDir, srcDir} from './createTopProjectDirs'
+// import {compDir, srcDir} from './createTopProjectDirs'
 // import {appNameFromPath} from inflections'./generateAppCode'
 import {generateAppFile} from './generateAppFile'
 
@@ -14,6 +14,9 @@ export async function createHighestLevelFiles(
   userClass: string,
   appName: string,
 ) {
+  const srcDir = `${appDir}/src`
+  const compDir = `${srcDir}/components`
+
   // DeleteInstanceMenu
   await fs.copy(
     `${boilerplateDir}/DeleteInstanceMenu.js`,
@@ -92,5 +95,5 @@ export async function createHighestLevelFiles(
   )
 
   // App file
-  await generateAppFile(currentStack, userClass)
+  await generateAppFile(currentStack, userClass, srcDir)
 }

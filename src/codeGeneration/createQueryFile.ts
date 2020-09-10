@@ -5,7 +5,7 @@ import {allCaps} from '../tools/inflections'
 
 const Handlebars = require('handlebars')
 
-import {sourcePropsDir} from './createTopProjectDirs'
+// import {sourcePropsDir} from './createTopProjectDirs'
 
 const queryFileTemplate = Handlebars.compile(`import gql from 'graphql-tag';
 
@@ -30,7 +30,11 @@ export const {{sourceAllCaps}}_RELATIONSHIPS = {
    {{typeRelationships}},
 };`)
 
-export async function createQueryFile(currentStack: StackInfo, source: string) {
+export async function createQueryFile(
+  currentStack: StackInfo,
+  source: string,
+  sourcePropsDir: string
+) {
   const sourceInfo = currentStack.sources[source]
 
   const queryFileText = queryFileTemplate({

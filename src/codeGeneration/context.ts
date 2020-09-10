@@ -1,5 +1,5 @@
-import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../../constants'
-import {StackInfo, TreeTypeChildrenList} from '../../constants/types'
+import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../constants'
+import {StackInfo, TreeTypeChildrenList} from '../constants/types'
 import {
   allCaps,
   pluralLowercaseName,
@@ -7,7 +7,7 @@ import {
   queryForSource,
   relationshipsForSource,
   singularName,
-} from '../../tools/inflections'
+} from '../tools/inflections'
 
 const Handlebars = require('handlebars')
 
@@ -20,7 +20,7 @@ const getComponentName = (type: string, componentType: string) => {
 
 const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
 
-export const sectionsContent = (
+export const context = (
   type: string,
   unit: string,
   stackInfo: StackInfo,
@@ -175,14 +175,12 @@ export const sectionsContent = (
   }
 
   return {
-    context: {
-      formTypes,
-      nodeTypes,
-      dataTypes,
-      boilerPlateInfo,
-      names,
-      childrenInfo,
-      fileInfo,
-    },
+    formTypes,
+    nodeTypes,
+    dataTypes,
+    boilerPlateInfo,
+    names,
+    childrenInfo,
+    fileInfo,
   }
 }

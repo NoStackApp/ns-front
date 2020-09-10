@@ -6,7 +6,9 @@ export async function generateAppTypeFiles(
   userClass: string,
   currentStack: StackInfo,
   template: string,
+  compDir: string
 ) {
+  console.log('inside generateAppTypeFiles.')
   const unitKeys = Object.keys(units)
 
   let i
@@ -14,6 +16,6 @@ export async function generateAppTypeFiles(
     const unit = unitKeys[i]
 
     // eslint-disable-next-line no-await-in-loop
-    await generateUnitTypeFiles(units, unit, userClass, currentStack, template)
+    await generateUnitTypeFiles(units, unit, userClass, currentStack, template, compDir)
   }
 }

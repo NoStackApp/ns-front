@@ -11,6 +11,7 @@ export async function generateFilesForType(
   sourceInfo: SourceInfo,
   highestLevel: string,
   template: string,
+  compDir: string,
 ) {
   const typeInfo = currentStack.types[type]
   const typeSourceInfo = typeInfo.sources[source]
@@ -51,7 +52,8 @@ export async function generateFilesForType(
       sourceUnit,
       selectionBoilerPlateInfo,
       currentStack,
-      template
+      template,
+      compDir
     )
   }
 
@@ -60,7 +62,8 @@ export async function generateFilesForType(
     source,
     boilerPlateInfo,
     currentStack,
-    template
+    template,
+    compDir
   )
 
   // console.log(`assnType=${assnType}`)
@@ -77,7 +80,8 @@ export async function generateFilesForType(
       source,
       creationBoilerPlateInfo,
       currentStack,
-      template
+      template,
+      compDir
     )
 
     const singularBoilerPlateInfo = {
@@ -90,7 +94,8 @@ export async function generateFilesForType(
       source,
       singularBoilerPlateInfo,
       currentStack,
-      template
+      template,
+      compDir
     )
   }
 }

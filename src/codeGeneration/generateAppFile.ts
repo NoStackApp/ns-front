@@ -2,12 +2,12 @@ import {associationTypes, boilerplateDir} from '../constants'
 import {StackInfo} from '../constants/types'
 import {allCaps, pluralName, singularName} from '../tools/inflections'
 
-import {srcDir} from './createTopProjectDirs'
+// import {srcDir} from './createTopProjectDirs'
 
 const fs = require('fs-extra')
 const Handlebars = require('handlebars')
 
-export async function generateAppFile(currentStack: StackInfo, userClass: string) {
+export async function generateAppFile(currentStack: StackInfo, userClass: string, srcDir: string) {
   // App
   if (!currentStack.userClasses[userClass]) {
     throw new Error(`template contains no userClass '${userClass}'`)

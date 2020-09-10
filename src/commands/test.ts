@@ -72,10 +72,11 @@ your code.`);
       await fs.remove(testDir)
       await fs.ensureDir(`${testDir}/src/components`)
       // await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
-      await generateTestCode(testDir, userClass, jsonPath, appName, template)
+      await generateTestCode(testDir, appParams, jsonPath)
     } catch (error) {
       throw error
     }
+
     const addedCodeDoc = `${docsDir}/addedCode.json`
     await insertAddedCode(testDir, addedCodeDoc)
 

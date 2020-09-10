@@ -7,7 +7,8 @@ export async function generateUnitTypeFiles(
   source: string,
   userClass: string,
   currentStack: StackInfo,
-  template: string
+  template: string,
+  compDir: string
 ) {
   const sourceInfo = sources[source]
   const {owner} = sourceInfo
@@ -46,7 +47,9 @@ export async function generateUnitTypeFiles(
         root,
         sourceInfo,
         highestLevel,
-        template)
+        template,
+        compDir,
+      )
     }
 
     // const joins = sourceInfo.joins;

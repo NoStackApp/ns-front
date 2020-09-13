@@ -19,22 +19,18 @@ async function processDirStructure(
 ) {
   await registerPartials(`${template}/partials`)
 
-  console.log(`here's Object.keys(fileStructure): ${JSON.stringify(Object.keys(fileStructure))}`)
   await Promise.all(Object.keys(fileStructure).map(
     async name => {
       const fileOrSubdirectory = fileStructure[name]
-      console.log(`starting name: ${name}`)
       if (fileOrSubdirectory && typeof fileOrSubdirectory === 'string') {
         try {
-          console.log(`${fileOrSubdirectory} is a file in ${appDir}`)
-
           const fileTemplatePath = `${template}/fileTemplates/${name}.hbs`
           const fileTemplate = await loadFileTemplate(fileTemplatePath)
           const fileText = await fileTemplate(contextForStandard(appInfo, stackInfo, name))
           // console.log(`configText=${configText}`)
           await fs.outputFile(`${appDir}/${fileStructure[name]}`, fileText)
-          console.log(`output to ${appDir}/${fileStructure[name]}`)
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.log(error)
           throw new Error(`problem trying to create ${appDir}/${fileStructure[name]}.
 Could be do to a missing or faulty file template ${name} in the template.
@@ -84,7 +80,5 @@ or is not properly configured:
 ${error}`)
   }
 
-  console.log(`in standardFiles, here's the template: ${template}`)
   await processDirStructure(fileStructure, appDir, template, appInfo, stackInfo)
-  console.log('finished!!!')
 }

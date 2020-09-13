@@ -42,7 +42,6 @@ ${error}`)
   const genericTemplate = await loadFileTemplate(`${templateLocation}/generic.hbs`)
 
   const path = `${compDir}/${singularName(source)}/${dir}`
-  console.log(`path for type files is ${path}`)
   const dirList = [
     path,
   ]

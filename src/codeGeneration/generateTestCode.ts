@@ -1,13 +1,10 @@
 import {AppInfo, StackInfo} from '../constants/types'
 import {configuredDirs} from './configuredDirs'
 
-import {createConfigFile} from './createConfigFile'
-// import {createHighestLevelFiles} from './createHighestLevelFiles'
 import {createQueryFile} from './createQueryFile'
 import {getConfiguration} from './getConfiguration'
 import {standardFiles} from './standardFiles'
 import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
-// import execa = require('execa');
 
 const fs = require('fs-extra')
 
@@ -19,7 +16,6 @@ export async function generateTestCode(
   const srcDir = `${appDir}/src`
   const {userClass, units, template} = appInfo
 
-  console.log('beginning generateTestCode...')
   const config = await getConfiguration(template)
   // console.log(`stacklocation=${appDir}/stack.json`)
   const stackInfo: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
@@ -66,7 +62,6 @@ export async function generateTestCode(
     throw new Error('error in creating top project directories')
   }
 
-  console.log('about to call generateAppTypeFiles.')
   try {
     await generateAppTypeFiles(sources, userClass, stackInfo, template, compDir)
   } catch (error) {

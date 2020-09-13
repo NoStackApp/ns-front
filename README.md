@@ -8,6 +8,8 @@ The ns-front CLI provides tools for front end developers building NoStack applic
 [![License](https://img.shields.io/npm/l/ns-front.svg)](https://github.com/https://github.com/NoStackApp/ns-front/blob/master/package.json)
 
 <!-- toc -->
+* [Why](#why)
+* [What](#what)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -30,6 +32,8 @@ Features include:
 * Use of handlebars with a simple standard structure for templates.
 * [Coming Soon] Generation of an app from a template.
 * [Coming Soon] A searchable list for registering templates, so that if you create a template others can find it.
+
+We're working very hard right now to get this working.  If you want to help with this project, please open issues and start talking to us!
 
 # Usage
 <!-- usage -->

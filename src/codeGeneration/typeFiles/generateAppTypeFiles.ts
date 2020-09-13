@@ -8,7 +8,6 @@ export async function generateAppTypeFiles(
   template: string,
   compDir: string
 ) {
-  console.log('inside generateAppTypeFiles.')
   const unitKeys = Object.keys(units)
 
   let i

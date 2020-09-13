@@ -26,6 +26,8 @@ export async function configuredDirs(
   ))
 
   await Promise.all(Object.keys(units).map(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
     async function (key: number) {
       const dir = `${appDir}/${config.dirs.components}/${units[key]}`
       try {

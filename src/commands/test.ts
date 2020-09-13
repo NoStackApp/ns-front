@@ -58,10 +58,12 @@ your code.`);
       const appYaml = fs.readFileSync(appFile, 'utf8')
       appParams = await yaml.safeLoad(appYaml)
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('error opening app.yml')
       throw error
     }
 
-    const {appName, userClass, units, template} = appParams
+    const {units} = appParams
 
     // store added code before generating new code.
     await storeAddedCode(appDir)
@@ -91,7 +93,7 @@ your code.`);
       await initializeLogFile(logFile)
 
       problemsFound = await checkGeneratedUnits(
-        units,
+        Object.keys(units),
         diffsDir,
         originalComps,
         generatedComps,

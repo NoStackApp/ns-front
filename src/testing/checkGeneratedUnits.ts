@@ -1,7 +1,8 @@
 import {checkDirForDiscrepancies} from '../testing/checkDirForDiscrepancies'
+import {singularName} from '../tools/inflections'
 
 export async function checkGeneratedUnits(
-  units: [string],
+  units: string[],
   diffsDir: string,
   originalComps: string,
   generatedComps: string,
@@ -9,9 +10,10 @@ export async function checkGeneratedUnits(
   problemsFound: boolean,
 ) {
   await Promise.all(units.map(async (unit: string) => {
-    const diffsFile = `${diffsDir}/${unit}`
-    const originalUnit = `${originalComps}/${unit}`
-    const generatedUnit = `${generatedComps}/${unit}`
+    const unitName = singularName(unit)
+    const diffsFile = `${diffsDir}/${unitName}`
+    const originalUnit = `${originalComps}/${unitName}`
+    const generatedUnit = `${generatedComps}/${unitName}`
     const problemsFoundLocally = await checkDirForDiscrepancies(
       diffsFile,
       originalUnit,

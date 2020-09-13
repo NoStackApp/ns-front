@@ -31,11 +31,11 @@ export const {{sourceAllCaps}}_RELATIONSHIPS = {
 };`)
 
 export async function createQueryFile(
-  currentStack: StackInfo,
+  stackInfo: StackInfo,
   source: string,
   sourcePropsDir: string
 ) {
-  const sourceInfo = currentStack.sources[source]
+  const sourceInfo = stackInfo.sources[source]
 
   const queryFileText = queryFileTemplate({
     sourceAllCaps: allCaps(source),

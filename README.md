@@ -11,6 +11,26 @@ The ns-front CLI provides tools for front end developers building NoStack applic
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+
+# Why
+Today good software must change all the time.  The ideal is to leverage external packages for everything that you can but to be a slave to none of them.
+
+That may seem contradictory.  The more you use other packages, the more potential conflicts you invite.  The challenge is to minimize your code but to be able to maintain it as other packages update under your feet.
+
+# What
+ns-front is a meta-templating CLI.  You can create templates for yourself or others that have regions built in for customized code.  That in itself is not unique.
+
+What is more special is that templates of a certain category are *exchangeable*. That means that, after you've created your code, you can replace or update the template and your custom changes will persist to the new version, WordPress style! In WordPress, any two templates can be interchanged as long as they share the same fields.  The same way, with ns-front you can interchange two templates with the same category and fields.  (By category we mean things like framework, back end tool, etc. that influence what you need.)
+
+Currently, a template must be stored in a repo and distributed separately, and must conform to required standards explained below.
+
+Features include:
+* A `test` command to be sure that no custom code you created violates the standards for the template.  (Otherwise, you could lose your custom code)
+* Rather than limiting an app to standard pages, a template relies upon a flexible specification with the units and hierarchies of components that you need in your app. Also, a template can (and should) allow for custom styling, so that any mockup can be used with a decent template.
+* Use of handlebars with a simple standard structure for templates.
+* [Coming Soon] Generation of an app from a template.
+* [Coming Soon] A searchable list for registering templates, so that if you create a template others can find it.
+
 # Usage
 <!-- usage -->
 ```sh-session
@@ -25,6 +45,7 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`nsfront help [COMMAND]`](#nsfront-help-command)

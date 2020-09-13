@@ -13,26 +13,28 @@ const fs = require('fs-extra')
 
 export async function generateTestCode(
   appDir: string,
-  appParams: AppInfo,
+  appInfo: AppInfo,
   jsonPath: string,
 ) {
   const srcDir = `${appDir}/src`
-  const {appName, userClass, units, template} = appParams
+  const {userClass, units, template} = appInfo
 
+  console.log('beginning generateTestCode...')
   const config = await getConfiguration(template)
   // console.log(`stacklocation=${appDir}/stack.json`)
-  const currentStack: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
+  const stackInfo: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
 
   try {
-    await standardFiles(template, appDir)
+    await standardFiles(template, appDir, appInfo, stackInfo)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error)
     throw new Error(`error in creating standard files: ${error}`)
   }
 
+  // console.log(`units is: ${JSON.stringify(Object.keys(units), null, 2)}`)
   try {
-    await configuredDirs(config, appDir, units)
+    await configuredDirs(config, appDir, Object.keys(units))
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error)
@@ -41,9 +43,9 @@ export async function generateTestCode(
 
   // console.log(`appDir=${appDir}`)
   // const appName = appNameFromPath(appDir)
-  const configText = await createConfigFile(currentStack, appName, template)
+  // const configText = await createConfigFile(currentStack, appName, template)
   // console.log(`configText=${configText}`)
-  await fs.outputFile(`${srcDir}/config/index.js`, configText)
+  // await fs.outputFile(`${srcDir}/config/index.js`, configText)
 
   // try {
   //   await createHighestLevelFiles(currentStack, appDir, userClass, appName)
@@ -51,14 +53,14 @@ export async function generateTestCode(
   //   throw new Error(`error in creating highest level files: ${error}`)
   // }
 
-  const sources = currentStack.sources
+  const sources = stackInfo.sources
 
   // mapObject
   const compDir = `${srcDir}/components`
   const sourcePropsDir = `${compDir}/source-props`
   try {
     await Promise.all(Object.keys(sources).map(async source => {
-      await createQueryFile(currentStack, source, sourcePropsDir)
+      await createQueryFile(stackInfo, source, sourcePropsDir)
     }))
   } catch (error) {
     throw new Error('error in creating top project directories')
@@ -66,7 +68,7 @@ export async function generateTestCode(
 
   console.log('about to call generateAppTypeFiles.')
   try {
-    await generateAppTypeFiles(sources, userClass, currentStack, template, compDir)
+    await generateAppTypeFiles(sources, userClass, stackInfo, template, compDir)
   } catch (error) {
     throw error
   }

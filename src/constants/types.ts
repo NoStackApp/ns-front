@@ -182,11 +182,21 @@ export interface CustomCodeRepository {
   removedCode: CustomCodeCollection;
 }
 
+interface TypeHierarchy {
+  [index: number]: string | TypeHierarchy;
+}
+
+interface UnitComponents {
+  userClass: string;
+  hierarchy: TypeHierarchy;
+}
+
 export interface AppInfo {
-  appName: string;
+  appName: number;
   template: string;
   userClass: string;
-  units: [string];
+  units: UnitComponents[];
+  topUnits: string[];
 }
 
 // following is a recursive Directory type.  A directory can contain

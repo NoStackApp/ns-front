@@ -9,7 +9,7 @@ const options = {
 export async function configuredDirs(
   config: Configuration,
   appDir: string,
-  units: [string],
+  units: string[],
 ) {
   const {dirs} = config
   await Promise.all(Object.keys(dirs).map(

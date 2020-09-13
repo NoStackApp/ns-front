@@ -1,4 +1,4 @@
-import {Directory} from '../constants/types'
+import {AppInfo, Directory, StackInfo} from '../constants/types'
 import {contextForStandard} from './contextForStandard'
 import {loadFileTemplate} from './loadFileTemplate'
 import {registerPartials} from './registerPartials'
@@ -13,24 +13,29 @@ const options = {
 async function processDirStructure(
   fileStructure: Directory,
   appDir: string,
-  template: string
+  template: string,
+  appInfo: AppInfo,
+  stackInfo: StackInfo,
 ) {
   await registerPartials(`${template}/partials`)
-  console.log(`in processDirStructure, here's the template: ${template}`)
+
+  console.log(`here's Object.keys(fileStructure): ${JSON.stringify(Object.keys(fileStructure))}`)
   await Promise.all(Object.keys(fileStructure).map(
     async name => {
       const fileOrSubdirectory = fileStructure[name]
+      console.log(`starting name: ${name}`)
       if (fileOrSubdirectory && typeof fileOrSubdirectory === 'string') {
         try {
           console.log(`${fileOrSubdirectory} is a file in ${appDir}`)
-          console.log(`template is ${template}`)
+
           const fileTemplatePath = `${template}/fileTemplates/${name}.hbs`
           const fileTemplate = await loadFileTemplate(fileTemplatePath)
-          const fileText = await fileTemplate(contextForStandard(name))
+          const fileText = await fileTemplate(contextForStandard(appInfo, stackInfo, name))
           // console.log(`configText=${configText}`)
           await fs.outputFile(`${appDir}/${fileStructure[name]}`, fileText)
           console.log(`output to ${appDir}/${fileStructure[name]}`)
         } catch (error) {
+          console.log(error)
           throw new Error(`problem trying to create ${appDir}/${fileStructure[name]}.
 Could be do to a missing or faulty file template ${name} in the template.
    `)
@@ -52,7 +57,9 @@ Could be do to a missing or faulty file template ${name} in the template.
           await processDirStructure(
             fileOrSubdirectory as Directory,
             childrenAppDir,
-            template
+            template,
+            appInfo,
+            stackInfo
           )
       }
     },
@@ -62,6 +69,8 @@ Could be do to a missing or faulty file template ${name} in the template.
 export async function standardFiles(
   template: string,
   appDir: string,
+  appInfo: AppInfo,
+  stackInfo: StackInfo,
 ) {
   let fileStructure: Directory
   const standardFile = `${template}/standard.yml`
@@ -76,6 +85,6 @@ ${error}`)
   }
 
   console.log(`in standardFiles, here's the template: ${template}`)
-  await processDirStructure(fileStructure, appDir, template)
+  await processDirStructure(fileStructure, appDir, template, appInfo, stackInfo)
   console.log('finished!!!')
 }

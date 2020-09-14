@@ -25,9 +25,9 @@ export async function configuredDirs(
     },
   ))
 
-  await Promise.all(Object.keys(units).map(
-    async function (key: number) {
-      const dir = `${appDir}/${config.dirs.components}/${units[key]}`
+  await Promise.all(units.map(
+    async function (unit) {
+      const dir = `${appDir}/${config.dirs.components}/${unit}`
       try {
         await fs.ensureDir(dir, options)
       // console.log('success creating dirs')

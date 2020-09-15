@@ -1,5 +1,5 @@
 import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../../constants'
-import {SourceInfo, StackInfo} from '../../constants/types'
+import {AppInfo, SourceInfo, StackInfo} from '../../constants/types'
 import {generateTypeFile} from './generateTypeFile'
 
 export async function generateFilesForType(

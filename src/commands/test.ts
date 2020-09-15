@@ -41,10 +41,10 @@ your code.`);
     const {flags} = this.parse(Test)
     const appDir = flags.appDir || isRequired('appDir', 'makecode', 'a')
 
-    const docsDir = `${appDir}/docs`
-    const appFile = `${docsDir}/app.yml`
+    const metaDir = `${appDir}/meta`
+    const appFile = `${metaDir}/app.yml`
 
-    const jsonPath = `${docsDir}/stack.json`
+    const jsonPath = `${metaDir}/stack.json`
 
     // npm version 8 has a known bug with fs-extra...
     const nodeRelease = parseFloat(process.versions.node)
@@ -79,7 +79,7 @@ your code.`);
       throw error
     }
 
-    const addedCodeDoc = `${docsDir}/addedCode.json`
+    const addedCodeDoc = `${metaDir}/addedCode.json`
     await insertAddedCode(testDir, addedCodeDoc)
 
     const originalComps = `${appDir}/src/components`

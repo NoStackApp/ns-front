@@ -1,5 +1,3 @@
-// import {allCaps} from '../inflections'
-
 export interface UserInfo {
   name: string;
   stack: string;
@@ -12,12 +10,12 @@ export interface UserInfo {
   licenseId: string;
 }
 
-export interface CreateOptions {
-  parent: string;
-  value: string;
-  level: string;
-  userInfo: UserInfo;
-}
+// export interface CreateOptions {
+//   parent: string;
+//   value: string;
+//   level: string;
+//   userInfo: UserInfo;
+// }
 
 interface PropsInfo {
   queryBody: string;
@@ -183,20 +181,59 @@ export interface CustomCodeRepository {
 }
 
 interface TypeHierarchy {
-  [index: number]: string | TypeHierarchy;
+  [key: string]: string | TypeHierarchy | null;
 }
 
-interface UnitComponents {
-  userClass: string;
+interface UnitDiscription {
+  userClass?: string;
   hierarchy: TypeHierarchy;
 }
 
+interface Units {
+  [key: string]: UnitDiscription;
+}
+
+interface BackendIdList {
+  [key: string]: string;
+}
+
+interface TypeActionIdList {
+  [typeName: string]: BackendIdList;
+}
+
+interface ActionIdList {
+  [unitName: string]: TypeActionIdList;
+}
+
+export interface BackendIds {
+  stack?: string;
+  units: BackendIdList;
+  types: BackendIdList;
+  actions?: ActionIdList;
+}
+
+interface BackendQueryData {
+  body: string;
+  relationships?: string;
+}
+
+interface BackendQueriesData {
+  [type: string]: BackendQueryData;
+}
+
+interface BackendData {
+  ids: BackendIds;
+  queries?: BackendQueriesData;
+  info: object;
+}
+
 export interface AppInfo {
-  appName: number;
+  appName: string;
   template: string;
   userClass: string;
-  units: UnitComponents[];
+  units: Units;
   topUnits: string[];
+  backend?: BackendData;
 }
 
 // following is a recursive Directory type.  A directory can contain
@@ -209,7 +246,28 @@ interface ConfigurationDirectories {
   components: string;
   [key: string]: string;
 }
-export interface Configuration {
-  dirs: ConfigurationDirectories;
+
+export interface CommandSpec {
+  title: string;
+  file: string;
+  arguments: string[];
+  options?: object;
 }
 
+export interface PlaceholderAppCreation {
+  mainInstallation?: string[];
+  devInstallation?: string[];
+  preCommands?: CommandSpec[];
+}
+
+export interface Configuration {
+  category: string;
+  dirs: ConfigurationDirectories;
+  placeholderAppCreation: PlaceholderAppCreation;
+}
+
+export interface UnitNameInfo {
+  name: string;
+  detail?: string;
+  prefix?: string;
+}

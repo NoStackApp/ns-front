@@ -1,4 +1,7 @@
 import {Configuration} from '../constants/types'
+import {singularName} from '../tools/inflections'
+import {parseUnitSpecName} from './parseUnitSpecName'
+import {unitNameFromSpec} from './unitNameFromSpec'
 
 const fs = require('fs-extra')
 
@@ -26,7 +29,8 @@ export async function configuredDirs(
   ))
 
   await Promise.all(units.map(
-    async function (unit) {
+    async function (unitKey) {
+      const unit = unitNameFromSpec(unitKey)
       const dir = `${appDir}/${config.dirs.components}/${unit}`
       try {
         await fs.ensureDir(dir, options)

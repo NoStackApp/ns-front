@@ -1,8 +1,8 @@
 import {AppInfo, StackInfo} from '../constants/types'
 import {configuredDirs} from './configuredDirs'
 
-import {createQueryFile} from './createQueryFile'
-import {getConfiguration} from './getConfiguration'
+import {getConfiguration} from '../constants/getConfiguration'
+import {createQueryFiles} from './createQueryFiles'
 import {standardFiles} from './standardFiles'
 import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
 
@@ -13,7 +13,6 @@ export async function generateTestCode(
   appInfo: AppInfo,
   jsonPath: string,
 ) {
-  const srcDir = `${appDir}/src`
   const {userClass, units, template} = appInfo
 
   const config = await getConfiguration(template)
@@ -49,21 +48,27 @@ export async function generateTestCode(
   //   throw new Error(`error in creating highest level files: ${error}`)
   // }
 
-  const sources = stackInfo.sources
-
   // mapObject
-  const compDir = `${srcDir}/components`
-  const sourcePropsDir = `${compDir}/source-props`
-  try {
-    await Promise.all(Object.keys(sources).map(async source => {
-      await createQueryFile(stackInfo, source, sourcePropsDir)
-    }))
-  } catch (error) {
-    throw new Error('error in creating top project directories')
-  }
+  await createQueryFiles(config, appInfo, appDir)
+  // if (config.dirs.queries) {
+  //   // create query files in the directory specified by the template.
+  //   const queriesDir = config.dirs.queries
+  //   try {
+  //     console.log(`before units: ${JSON.stringify(Object.keys(units), null, 2)}`)
+  //     await Promise.all(Object.keys(units).map(async unit => {
+  //       console.log(`creating query file for unit ${unit}`)
+  //       const unitNameInfo = parseUnitSpecName(unit)
+  //       await createQueryFile(unitNameInfo.name, queriesDir, appInfo, template)
+  //     }))
+  //   } catch (error) {
+  //     console.error(error)
+  //     throw new Error('error in creating query file')
+  //   }
+  // }
 
+  const compDir = config.dirs.components
   try {
-    await generateAppTypeFiles(sources, userClass, stackInfo, template, compDir)
+    await generateAppTypeFiles(userClass, stackInfo, template, compDir)
   } catch (error) {
     throw error
   }

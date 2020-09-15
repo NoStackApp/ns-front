@@ -3,13 +3,13 @@ import {Sources, StackInfo} from '../../constants/types'
 import {generateFilesForType} from './generateFilesForType'
 
 export async function generateUnitTypeFiles(
-  sources: Sources,
   source: string,
   userClass: string,
-  currentStack: StackInfo,
+  stackInfo: StackInfo,
   template: string,
   compDir: string
 ) {
+  const sources = stackInfo.sources
   const sourceInfo = sources[source]
   const {owner} = sourceInfo
   // console.log(`source=${source}, userClass=${userClass}, owner=${owner}`)
@@ -40,7 +40,7 @@ export async function generateUnitTypeFiles(
       // console.log(`*** typeName=${typeName}`)
       // eslint-disable-next-line no-await-in-loop
       await generateFilesForType(
-        currentStack,
+        stackInfo,
         type,
         source,
         selectionRoot,

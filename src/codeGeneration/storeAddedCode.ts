@@ -88,8 +88,8 @@ async function storeCustomCodeForFile(file: string, customCode: CustomCodeReposi
 
 export const storeAddedCode = async (rootDir: string) => {
   const compsDir = rootDir + '/src/components/'
-  const docsDir = rootDir + '/docs/'
-  const customCodeFile = docsDir + 'addedCode.json'
+  const metaDir = rootDir + '/meta/'
+  const customCodeFile = metaDir + 'addedCode.json'
 
   const existsComponents = await fs.pathExists(compsDir)
   if (!existsComponents) return

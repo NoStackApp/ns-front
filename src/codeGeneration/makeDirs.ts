@@ -1,12 +1,10 @@
+import {dirOptions} from '../constants/dirOptions'
+
 const fs = require('fs-extra')
-// const desiredMode = 0o2775
-const options = {
-  mode: 0o2775,
-}
 
 async function makeDir(dirName: string) {
   try {
-    await fs.ensureDir(dirName, options)
+    await fs.ensureDir(dirName, dirOptions)
     // console.log('success creating dirs')
   } catch (error) {
     // eslint-disable-next-line no-console

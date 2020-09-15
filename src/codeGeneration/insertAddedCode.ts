@@ -8,7 +8,8 @@
 // const recursive = require('recursive-readdir')
 
 // rootDir: string
-import chalk from 'chalk'
+const chalk = require('chalk')
+
 import execa = require('execa');
 import * as path from 'path'
 // import {regExAddedCodeSection} from '../constants/Regex/regExAddedCodeSection'
@@ -133,7 +134,7 @@ export const insertAddedCode = async (testDir: string, addedCodeDoc: string) => 
   }
 
   customCode = await fs.readJson(addedCodeDoc)
-  // console.log(`addedCode=${JSON.stringify(addedCode, null, 1)}`)
+  console.log(`customCode=${JSON.stringify(customCode, null, 1)}`)
   if (Object.keys(customCode).length === 0) {
     // no added code to add
     return

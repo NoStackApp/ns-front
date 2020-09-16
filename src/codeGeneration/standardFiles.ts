@@ -13,18 +13,18 @@ const options = {
 async function processDirStructure(
   fileStructure: Directory,
   appDir: string,
-  template: string,
+  templateDir: string,
   appInfo: AppInfo,
   stackInfo: StackInfo,
 ) {
-  await registerPartials(`${template}/partials`)
+  await registerPartials(`${templateDir}/partials`)
 
   await Promise.all(Object.keys(fileStructure).map(
     async name => {
       const fileOrSubdirectory = fileStructure[name]
       if (fileOrSubdirectory && typeof fileOrSubdirectory === 'string') {
         try {
-          const fileTemplatePath = `${template}/fileTemplates/${name}.hbs`
+          const fileTemplatePath = `${templateDir}/fileTemplates/${name}.hbs`
           const fileTemplate = await loadFileTemplate(fileTemplatePath)
           const fileText = await fileTemplate(contextForStandard(appInfo, stackInfo, name))
           // console.log(`configText=${configText}`)
@@ -53,7 +53,7 @@ Could be do to a missing or faulty file template ${name} in the template.
           await processDirStructure(
             fileOrSubdirectory as Directory,
             childrenAppDir,
-            template,
+            templateDir,
             appInfo,
             stackInfo
           )
@@ -63,13 +63,13 @@ Could be do to a missing or faulty file template ${name} in the template.
 }
 
 export async function standardFiles(
-  template: string,
+  templateDir: string,
   appDir: string,
   appInfo: AppInfo,
   stackInfo: StackInfo,
 ) {
   let fileStructure: Directory
-  const standardFile = `${template}/standard.yml`
+  const standardFile = `${templateDir}/standard.yml`
   try {
     const appYaml = fs.readFileSync(standardFile, 'utf8')
     fileStructure = await yaml.safeLoad(appYaml)
@@ -80,5 +80,5 @@ or is not properly configured:
 ${error}`)
   }
 
-  await processDirStructure(fileStructure, appDir, template, appInfo, stackInfo)
+  await processDirStructure(fileStructure, appDir, templateDir, appInfo, stackInfo)
 }

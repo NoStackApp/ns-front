@@ -6,7 +6,7 @@ export async function generateUnitTypeFiles(
   source: string,
   userClass: string,
   stackInfo: StackInfo,
-  template: string,
+  templateDir: string,
   compDir: string
 ) {
   const sources = stackInfo.sources
@@ -47,7 +47,7 @@ export async function generateUnitTypeFiles(
         root,
         sourceInfo,
         highestLevel,
-        template,
+        templateDir,
         compDir,
       )
     }

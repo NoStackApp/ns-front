@@ -227,9 +227,15 @@ interface BackendData {
   info: object;
 }
 
+interface AppTemplateInfo {
+  name: string;
+  version: string;
+  dir: string;
+}
+
 export interface AppInfo {
   appName: string;
-  template: string;
+  template: AppTemplateInfo;
   userClass: string;
   units: Units;
   topUnits: string[];
@@ -261,6 +267,8 @@ export interface PlaceholderAppCreation {
 }
 
 export interface Configuration {
+  name: string;
+  version: string;
   category: string;
   dirs: ConfigurationDirectories;
   placeholderAppCreation: PlaceholderAppCreation;

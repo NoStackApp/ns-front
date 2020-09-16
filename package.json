@@ -1,11 +1,20 @@
 {
   "name": "ns-front",
-  "description": "Tools for front end no stack developers",
+  "description": "exchangeable templates: maintain your custom code and update everything else",
   "version": "0.3.0",
   "author": "YizYah @YizYah",
   "bin": {
     "nsfront": "./bin/run"
   },
+  "keywords": [
+    "template",
+    "front end",
+    "automated",
+    "update",
+    "cli",
+    "custom",
+    "customized"
+  ],
   "bugs": "https://github.com/https://github.com/NoStackApp/ns-front/issues",
   "dependencies": {
     "@mrmlnc/readdir-enhanced": "^2.2.1",

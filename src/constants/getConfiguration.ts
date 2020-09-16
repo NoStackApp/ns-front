@@ -3,9 +3,9 @@ import {Configuration} from './types'
 const fs = require('fs-extra')
 const yaml = require('js-yaml')
 
-export async function getConfiguration(template: string) {
+export async function getConfiguration(templateDir: string) {
   let config: Configuration
-  const configFile = `${template}/config.yml`
+  const configFile = `${templateDir}/config.yml`
   try {
     const appYaml = fs.readFileSync(configFile, 'utf8')
     config = await yaml.safeLoad(appYaml)

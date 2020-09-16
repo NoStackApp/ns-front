@@ -134,7 +134,7 @@ export const insertAddedCode = async (testDir: string, addedCodeDoc: string) => 
   }
 
   customCode = await fs.readJson(addedCodeDoc)
-  console.log(`customCode=${JSON.stringify(customCode, null, 1)}`)
+
   if (Object.keys(customCode).length === 0) {
     // no added code to add
     return

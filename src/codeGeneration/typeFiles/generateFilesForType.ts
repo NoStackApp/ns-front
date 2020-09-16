@@ -1,5 +1,5 @@
 import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../../constants'
-import {AppInfo, SourceInfo, StackInfo} from '../../constants/types'
+import {SourceInfo, StackInfo} from '../../constants/types'
 import {generateTypeFile} from './generateTypeFile'
 
 export async function generateFilesForType(
@@ -10,7 +10,7 @@ export async function generateFilesForType(
   root: string,
   sourceInfo: SourceInfo,
   highestLevel: string,
-  template: string,
+  templateDir: string,
   compDir: string,
 ) {
   const typeInfo = currentStack.types[type]
@@ -52,7 +52,7 @@ export async function generateFilesForType(
       sourceUnit,
       selectionBoilerPlateInfo,
       currentStack,
-      template,
+      templateDir,
       compDir
     )
   }
@@ -62,7 +62,7 @@ export async function generateFilesForType(
     source,
     boilerPlateInfo,
     currentStack,
-    template,
+    templateDir,
     compDir
   )
 
@@ -80,7 +80,7 @@ export async function generateFilesForType(
       source,
       creationBoilerPlateInfo,
       currentStack,
-      template,
+      templateDir,
       compDir
     )
 
@@ -94,7 +94,7 @@ export async function generateFilesForType(
       source,
       singularBoilerPlateInfo,
       currentStack,
-      template,
+      templateDir,
       compDir
     )
   }

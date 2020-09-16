@@ -184,7 +184,11 @@ Here is the error reported:\n${error}`)
         const customCode = `${metaDir}/addedCode.json`
         const appInfo: AppInfo = {
           appName: 'myApp',
-          template: templateDir,
+          template: {
+            dir: templateDir,
+            name: config.name,
+            version: config.version,
+          },
           userClass: 'user',
           units: {
             unit1: {

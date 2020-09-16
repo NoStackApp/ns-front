@@ -1,6 +1,6 @@
 ns-front
 ========
-The ns-front CLI is a meta-tool for working with *replaceable* front end templates.
+A meta-tool for creating, distributing and using *exchangeable* front end templates.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/ns-front.svg)](https://npmjs.org/package/ns-front)
@@ -15,26 +15,37 @@ The ns-front CLI is a meta-tool for working with *replaceable* front end templat
 <!-- tocstop -->
 
 # Why
-Today good software must change all the time.  The ideal is to leverage external packages for everything that you can but to be a slave to none of them.
+Endless templates generate code quickly.  But what happens when you want to update it?  And wouldn't it be nice if you someone else would deal with the constant bot security complaints about packages in the code you've inherited?
 
-That may seem contradictory.  The more you use other packages, the more potential conflicts you invite.  The challenge is to minimize your code but to be able to maintain it as other packages update under your feet.
+The hard part of software development isn't usually building it, but rather maintaining it. Good software constantly evolves. 
+
+Today, software is made from endless packages evolving under our feet. This CLI was created to leverage external package maintenance with minimal refactoring.  It's intended for both template developers and users.
 
 # What
-ns-front is a meta-templating CLI.  You can create templates for yourself or others that have regions built in for customized code.  That in itself is not unique.
+ns-front (short for "No Stack Front") is CLI for front end templates that can be exchanged as easily as WordPress themes.  You can create templates for yourself or others that have regions built in for customized code.  Then users of the template can upgrade easily, or even exchange templates within a category, without losing their custom changes.
 
-What is more special is that templates of a certain category are *exchangeable*. That means that, after you've created your code, you can replace or update the template and your custom changes will persist to the new version, WordPress style! In WordPress, any two templates can be interchanged as long as they share the same fields.  The same way, with ns-front you can interchange two templates with the same category and fields.  (By category we mean things like framework, back end tool, etc. that influence what you need.)
+(By category we mean the 'type' of produced app.  That is vague, and we may soon support more specific classifications, but in general a category should include a front end framework and probably a type of expected back end.)
 
 Currently, a template must be stored in a repo and distributed separately, and must conform to required standards explained below.
 
-Features include:
-* A `test` command to be sure that no custom code you created violates the standards for the template. The test ensures that custome code conforms to the [NoStack Front End Guidelines](https://bit.ly/nsFrontEndRules). (Otherwise, you could lose your custom code when you update your template!)
-* a `newapp` command to generate an "empty" placeholder app of the type used by a template.  (Kind of like create-react-app creates a placeholder React app.) The template specifies how such a placeholder gets created, so if you like you can use ns-front to let others generate some unique type of application.
-* [Coming Soon] A command `makecode` that generates an app from a template.
-* Rather than limiting an app to standard pages, a template relies upon a flexible specification with the units and hierarchies of components that you need in your app. Also, a template can (and should) allow for custom styling, so that any mockup can be used with a decent template.
-* Use of handlebars with a simple standard structure for templates.
+#Features
+* A `newapp` command to generate an "empty" placeholder app of the type used by a template.  (The way that `create-react-app` creates a placeholder React app.) The template specifies how such a placeholder gets created, so if you like you can use ns-front to let others generate some unique type of application.
+* A command `makecode` that generates an app from a template.
+* A `test` command to be sure that no custom code that the template user created violates the standards for the template. The test ensures that custome code conforms to the [NoStack Front End Guidelines](https://bit.ly/nsFrontEndRules). (Otherwise, you could lose your custom code when you update your template!)
+* A flexible, hierarchical approach: rather than limiting an app to standard pages (you know, a cookie cutter), a template relies upon a flexible specification with the units and hierarchies of components that you need in your app. Also, a template can (and should) allow for custom styling, so that any mockup can be used with a decent template.
+* Easy to use: Simple handlebars with a simple standard structure for templates.
 * [Coming Soon] A searchable list for registering templates, so that if you create a template others can find it.
+* Templates that support the [NoStack](https:www.nostack.net) service also can be used with autogenerated backends, so that you can throw together and then modify your whole stack with minimal code.
 
-We're working very hard right now to get this working.  If you want to help with this project, please open issues and start talking to us!
+# History of the Project
+We created this because we needed it at [NoStack](https:www.nostack.net).  Originally, we created a tool that was specific to our needs.  But then we realized that it would support a lot more people if we made it more generic.
+
+So, we turned it into a tool that supports any type of template. 
+Unfortunately, there's a problem as of today that you need an extra file ("stack.json") that most people won't have (see issue 1).  That's our top priority to remove today. But we have to release our current version, because we're still using it ourselves.  So, if you want to use this *right now*, contact us about generating one for you (info at nostack dot net).  Meanwhile, we're on it...
+ 
+ So far we've got [one template](https://github.com/YizYah/basicNsFrontTemplate), and we are pulling together the documentation.
+
+If you want to help with this project, please [open issues](https://github.com/https://github.com/NoStackApp/ns-front/issues) and start talking to us!  Or just reach out to info at nostack dot net.
 
 # Usage
 <!-- usage -->
@@ -109,6 +120,8 @@ Follow these steps:
 4. Open the `app.yml` file in the "meta" directory.  You need to replace `myApp` with the name that you want, and if necessary globally replace `user` with whatever you want for the user for that app, e.g. `buyer`.  
 5. You need to create a set of units under units. The symantic meaning of a unit will vary depending upon the template, but you can roughly think of them as pages or screens in your app. Each one must have a `hierarchy` of data types.  See [Creating a Data Type Hierarchy](##Creating a Data Type Hierarchy) below.
 6. Call `makecode` to generate your app code according to the template.
+7. Add custom code in accordance with  
+You can update the template whenever you like. Just bear in mind the following wa
 
 ##Creating a Data Type Hierarchy
 A Unit is a building block for an app user interface.  It also can be a query to the back end.  `ns-front` expects a hierarchy of data types for each unit.  So a 'unit' in `ns-front` terms is a hierarchy of types where each type appears only once in that unit  More complex interfaces can be built with joining units, which provides complete querying expressive power.

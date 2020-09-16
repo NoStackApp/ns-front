@@ -1,8 +1,8 @@
 import {Command, flags} from '@oclif/command'
-import {generateTestCode} from '../codeGeneration/generateTestCode'
+import {generateAppCode} from '../codeGeneration/generateAppCode'
 import {insertAddedCode} from '../codeGeneration/insertAddedCode'
 import {storeAddedCode} from '../codeGeneration/storeAddedCode'
-import {AppInfo} from '../constants/types'
+import {getAppInfo} from '../constants/getAppInfo'
 import {isRequired} from '../isRequired'
 import {checkDirectories} from '../testing/checkDirectories'
 import {checkStaticFiles} from '../testing/checkStaticFiles'
@@ -11,19 +11,19 @@ import {logEntry} from '../testing/logEntry'
 import {checkGeneratedUnits} from '../testing/checkGeneratedUnits'
 
 const fs = require('fs-extra')
-const yaml = require('js-yaml')
 
 const frontEndRulesDoc = 'https://bit.ly/nsFrontEndRules'
 
+const descriptionString = 'Confirms that your code is not violating any of ' +
+'the rules for testing required by nostack.  For documentation about those ' +
+'rules, please see ' + frontEndRulesDoc + '.  This is actually one of the tests ' +
+'conducted by NoStack to gauge the quality of submitted code.  Essentially, the ' +
+'test generates a new version of the code and then simply compares it against ' +
+'your current version.  If there are differences, then there is a problem with ' +
+'your code.'
+
 export default class Test extends Command {
-  static description = String(`
-The 'test' command lets you confirm that your code is not violating any of
-the rules for testing required by nostack.  For documentation about those
-rules, please see ${frontEndRulesDoc}.  This is actually one of the tests
-conducted by NoStack to gauge the quality of submitted code.  Essentially, the
-test generates a new version of the code and then simply compares it against
-your current version.  If there are differences, then there is a problem with
-your code.`);
+  static description = String(descriptionString)
 
   static examples = [
     '$ nsfront test -a ~/temp/myApp',
@@ -53,28 +53,18 @@ your code.`);
         You are currently running node ${process.version}`)
     }
 
-    let appParams: AppInfo
-    try {
-      const appYaml = fs.readFileSync(appFile, 'utf8')
-      appParams = await yaml.safeLoad(appYaml)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log('error opening app.yml')
-      throw error
-    }
-
-    const {units} = appParams
+    const appInfo = await getAppInfo(appFile)
+    const {units} = appInfo
 
     // store added code before generating new code.
     await storeAddedCode(appDir)
 
     const testDir = `${appDir}.test`
-
     try {
       await fs.remove(testDir)
       await fs.ensureDir(`${testDir}/src/components`)
       // await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
-      await generateTestCode(testDir, appParams, jsonPath)
+      await generateAppCode(testDir, appInfo, jsonPath)
     } catch (error) {
       throw error
     }

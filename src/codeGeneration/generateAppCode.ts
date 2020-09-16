@@ -8,19 +8,19 @@ import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
 
 const fs = require('fs-extra')
 
-export async function generateTestCode(
+export async function generateAppCode(
   appDir: string,
   appInfo: AppInfo,
   jsonPath: string,
 ) {
   const {userClass, units, template} = appInfo
 
-  const config = await getConfiguration(template)
+  const config = await getConfiguration(template.dir)
   // console.log(`stacklocation=${appDir}/stack.json`)
   const stackInfo: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
 
   try {
-    await standardFiles(template, appDir, appInfo, stackInfo)
+    await standardFiles(template.dir, appDir, appInfo, stackInfo)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error)
@@ -66,9 +66,10 @@ export async function generateTestCode(
   //   }
   // }
 
-  const compDir = config.dirs.components
+  const compDir = `${appDir}/${config.dirs.components}`
+
   try {
-    await generateAppTypeFiles(userClass, stackInfo, template, compDir)
+    await generateAppTypeFiles(userClass, stackInfo, template.dir, compDir)
   } catch (error) {
     throw error
   }

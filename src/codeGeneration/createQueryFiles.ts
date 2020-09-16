@@ -14,9 +14,10 @@ export async function createQueryFiles(config: Configuration, appInfo: AppInfo, 
 
   // create query files in the directory specified by the template.
   const {units, template} = appInfo
+  const templateDir = template.dir
   const queriesDir = `${appDir}/${config.dirs.queries}`
 
-  const queryFileTemplate = await loadFileTemplate(`${template}/query.hbs`)
+  const queryFileTemplate = await loadFileTemplate(`${templateDir}/query.hbs`)
   try {
     await Promise.all(Object.keys(units).map(async unitKey => {
       const unit = unitNameFromSpec(unitKey)

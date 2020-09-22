@@ -10,8 +10,10 @@ A meta-tool for creating, distributing and using *exchangeable* front end templa
 <!-- toc -->
 * [Why](#why)
 * [What](#what)
+* [History of the Project](#history-of-the-project)
 * [Usage](#usage)
 * [Commands](#commands)
+* [Creating Templates](#creating-templates)
 <!-- tocstop -->
 
 # Why
@@ -54,7 +56,7 @@ $ npm install -g ns-front
 $ nsfront COMMAND
 running command...
 $ nsfront (-v|--version|version)
-ns-front/0.3.0 linux-x64 node-v14.9.0
+ns-front/1.0.0-0 linux-x64 node-v14.9.0
 $ nsfront --help [COMMAND]
 USAGE
   $ nsfront COMMAND
@@ -65,6 +67,8 @@ USAGE
 # Commands
 <!-- commands -->
 * [`nsfront help [COMMAND]`](#nsfront-help-command)
+* [`nsfront makecode`](#nsfront-makecode)
+* [`nsfront newapp`](#nsfront-newapp)
 * [`nsfront test`](#nsfront-test)
 
 ## `nsfront help [COMMAND]`
@@ -84,9 +88,47 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
 
+## `nsfront makecode`
+
+generates or updates code from a template, preserving custom changes. The app directory should have been prepared the first time with a call to `newapp`
+
+```
+USAGE
+  $ nsfront makecode
+
+OPTIONS
+  -a, --appDir=appDir  application directory
+  -h, --help           show CLI help
+
+EXAMPLE
+  $ nostack makecode -a ~/temp/myapp
+```
+
+_See code: [src/commands/makecode.ts](https://github.com/NoStackApp/ns-front/blob/v1.0.0-0/src/commands/makecode.ts)_
+
+## `nsfront newapp`
+
+new placeholder app.  Creates an "empty" app (like create-react-app) for a template that you can build on with makecode.
+
+```
+USAGE
+  $ nsfront newapp
+
+OPTIONS
+  -a, --appDir=appDir            application directory
+  -b, --baseApp=baseApp          directory of the base app to copy. If it does not exist, it is created.
+  -h, --help                     show CLI help
+  -t, --templateDir=templateDir  template directory
+
+EXAMPLE
+  $ nostack newapp -t ~/templates/basicTemplate -a ~/temp/myapp -b ~/temp/baseapp
+```
+
+_See code: [src/commands/newapp.ts](https://github.com/NoStackApp/ns-front/blob/v1.0.0-0/src/commands/newapp.ts)_
+
 ## `nsfront test`
 
-The 'test' command lets you confirm that your code is not violating any of
+Confirms that your code is not violating any of the rules for testing required by nostack.  For documentation about those rules, please see https://bit.ly/nsFrontEndRules.  This is actually one of the tests conducted by NoStack to gauge the quality of submitted code.  Essentially, the test generates a new version of the code and then simply compares it against your current version.  If there are differences, then there is a problem with your code.
 
 ```
 USAGE
@@ -96,20 +138,11 @@ OPTIONS
   -a, --appDir=appDir  application directory
   -h, --help           show CLI help
 
-DESCRIPTION
-  The 'test' command lets you confirm that your code is not violating any of
-  the rules for testing required by nostack.  For documentation about those
-  rules, please see https://bit.ly/nsFrontEndRules.  This is actually one of the tests
-  conducted by NoStack to gauge the quality of submitted code.  Essentially, the
-  test generates a new version of the code and then simply compares it against
-  your current version.  If there are differences, then there is a problem with
-  your code.
-
 EXAMPLE
   $ nsfront test -a ~/temp/myApp
 ```
 
-_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v0.3.0/src/commands/test.ts)_
+_See code: [src/commands/test.ts](https://github.com/NoStackApp/ns-front/blob/v1.0.0-0/src/commands/test.ts)_
 <!-- commandsstop -->
 
 #Using Templates

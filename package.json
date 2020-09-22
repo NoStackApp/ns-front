@@ -1,7 +1,7 @@
 {
   "name": "ns-front",
   "description": "exchangeable templates: maintain your custom code and update everything else",
-  "version": "0.3.0",
+  "version": "1.0.0-0",
   "author": "YizYah @YizYah",
   "bin": {
     "nsfront": "./bin/run"

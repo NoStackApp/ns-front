@@ -1,6 +1,6 @@
-import {UnitNameInfo} from '../constants/types'
+import {SpecNameInfo} from './types'
 
-export const parseUnitSpecName = (text: string) => {
+export const parseSpecName = (text: string) => {
   const textFields = text.split('#')
   if (textFields.length > 2) {
     throw new Error(
@@ -9,15 +9,17 @@ export const parseUnitSpecName = (text: string) => {
   }
 
   let nameInfo = textFields[0].split('__')
-  let prefix = null
+  let prefix = ''
 
   if (textFields.length === 2) {
     nameInfo = textFields[1].split('__')
     prefix = textFields[0]
   }
 
-  const info: UnitNameInfo = {
+  const info: SpecNameInfo = {
     name: nameInfo[0],
+    detail: '',
+    prefix,
   }
 
   if (prefix) info.prefix = prefix

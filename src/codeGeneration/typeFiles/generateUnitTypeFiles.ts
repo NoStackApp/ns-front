@@ -1,20 +1,22 @@
 import {unitTypes} from '../../constants'
-import {Sources, StackInfo} from '../../constants/types'
+import {AppInfo, Schema} from '../../constants/types'
 import {generateFilesForType} from './generateFilesForType'
 
 export async function generateUnitTypeFiles(
   source: string,
   userClass: string,
-  stackInfo: StackInfo,
+  appInfo: AppInfo,
+  stackInfo: Schema,
   templateDir: string,
   compDir: string
 ) {
   const sources = stackInfo.sources
   const sourceInfo = sources[source]
-  const {owner} = sourceInfo
-  // console.log(`source=${source}, userClass=${userClass}, owner=${owner}`)
-  // console.log(`source=${source}, sourceInfo=${JSON.stringify(sourceInfo, null, 2)}`)
-  if (owner !== userClass) return
+
+  // const {owner} = sourceInfo
+  // // console.log(`source=${source}, userClass=${userClass}, owner=${owner}`)
+  // // console.log(`source=${source}, sourceInfo=${JSON.stringify(sourceInfo, null, 2)}`)
+  // if (owner !== userClass) return
 
   try {
     const highestLevel = 'highestLevel'
@@ -22,6 +24,7 @@ export async function generateUnitTypeFiles(
     const highestLevelList = selectedTree[highestLevel]
     let selectionRoot = highestLevelList[0]
     const root = sourceInfo.root
+    if (!root) throw new Error(`no root for source ${sourceInfo.name}`)
     if (highestLevelList.length > 1) {
       selectedTree[root] = highestLevelList
       sourceInfo.selectedTree[root] = highestLevelList
@@ -40,6 +43,7 @@ export async function generateUnitTypeFiles(
       // console.log(`*** typeName=${typeName}`)
       // eslint-disable-next-line no-await-in-loop
       await generateFilesForType(
+        appInfo,
         stackInfo,
         type,
         source,
@@ -62,6 +66,8 @@ export async function generateUnitTypeFiles(
     //   }
     // }
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
     throw new Error(`error creating unit ${source}: ${error}`)
   }
 }

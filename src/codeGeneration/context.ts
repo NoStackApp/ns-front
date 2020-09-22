@@ -1,5 +1,5 @@
 import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../constants'
-import {StackInfo, TreeTypeChildrenList} from '../constants/types'
+import {AppInfo, Schema, TreeTypeChildrenList} from '../constants/types'
 import {
   allCaps,
   pluralLowercaseName,
@@ -20,10 +20,11 @@ const getComponentName = (type: string, componentType: string) => {
 
 const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
 
-export const context = (
+export const context = async (
   type: string,
   unit: string,
-  stackInfo: StackInfo,
+  appInfo: AppInfo,
+  stackInfo: Schema,
   boilerPlateInfo: BoilerPlateInfoType,
 ) => {
   // stack data
@@ -35,7 +36,11 @@ export const context = (
   const children = unitInfo.selectedTree[type]
   const connectedUnit: string = unitInfo.connections[type]
   const connectedUnitInfo = sourcesInfo[connectedUnit]
-  const constraintsInfo = unitInfo.constraints
+
+  // function getChildren(type: string, unit: string, appInfo: AppInfo) {
+  //   return Object.keys(appInfo.units[unit].hierarchy)
+  // }
+  // const children = getChildren(type, unit, appInfo)
 
   const names = {
     singular: singularName(type),
@@ -67,47 +72,12 @@ export const context = (
     }
   }
 
-  Handlebars.registerHelper('refetchQueriesLine', function () {
-    // updateOnAddLine is 'refetchQueries' unless the current typeName is a property.
-    let refetchQueriesLine = 'refetchQueries,'
-    if (boilerPlateInfo.nodeType === nodeTypes.ROOT) {
-      children.map(
-        child => {
-          const childInfo = typesInfo[child]
-          const assnInfo = childInfo.sources[unit]
-          if (assnInfo.assnType === associationTypes.SINGLE_REQUIRED) {
-            refetchQueriesLine = ''
-          }
-        },
-      )
-    }
-    return new Handlebars.SafeString(refetchQueriesLine)
-  })
-
-  Handlebars.registerHelper('constraintValue', function () {
-    // constraintValue is is set to 'ignoredParameter' except in specific cases.
-    let constraintValue = 'ignoredParameter'
-    Object.keys(constraintsInfo).map(key => {
-      if (constraintsInfo[key].constraintType === 'ID') {
-        if (constraintsInfo[key].typeName === parentType || unitInfo.selectionRoot) {
-          constraintValue = constraintsInfo[key].constraintValue
-        }
-      }
-    })
-    return new Handlebars.SafeString(constraintValue)
-  })
-
   Handlebars.registerHelper('tempDetails', function () {
     const tempDetails = `unit: ${unit}, comp: ${names.component}, loc:`
     return new Handlebars.SafeString(tempDetails)
   })
 
-  // const tempDetails = fileInfoString({
-  //   unitName: unit,
-  //   component: names.component,
-  // }) + ', loc:'
-
-  // data for specific templates
+  // data about children
 
   const childrenInfoAll = children.map(child => {
     const childInfo = typesInfo[child]
@@ -178,6 +148,7 @@ export const context = (
     formTypes,
     nodeTypes,
     dataTypes,
+    stackInfo,
     boilerPlateInfo,
     names,
     childrenInfo,

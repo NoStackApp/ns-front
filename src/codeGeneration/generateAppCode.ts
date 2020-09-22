@@ -1,23 +1,25 @@
-import {AppInfo, StackInfo} from '../constants/types'
+import {AppInfo, Schema} from '../constants/types'
 import {configuredDirs} from './configuredDirs'
 
 import {getConfiguration} from '../constants/getConfiguration'
 import {createQueryFiles} from './createQueryFiles'
+import {buildSchema} from './schema/buildSchema'
 import {standardFiles} from './standardFiles'
 import {generateAppTypeFiles} from './typeFiles/generateAppTypeFiles'
 
-const fs = require('fs-extra')
+// const fs = require('fs-extra')
 
 export async function generateAppCode(
   appDir: string,
   appInfo: AppInfo,
-  jsonPath: string,
+  // jsonPath: string,
 ) {
   const {userClass, units, template} = appInfo
+  const stackInfo: Schema = await buildSchema(appInfo)
 
   const config = await getConfiguration(template.dir)
   // console.log(`stacklocation=${appDir}/stack.json`)
-  const stackInfo: StackInfo = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
+  // const stackInfo: Schema = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
 
   try {
     await standardFiles(template.dir, appDir, appInfo, stackInfo)
@@ -69,7 +71,7 @@ export async function generateAppCode(
   const compDir = `${appDir}/${config.dirs.components}`
 
   try {
-    await generateAppTypeFiles(userClass, stackInfo, template.dir, compDir)
+    await generateAppTypeFiles(userClass, appInfo, stackInfo, template.dir, compDir)
   } catch (error) {
     throw error
   }

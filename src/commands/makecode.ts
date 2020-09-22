@@ -39,10 +39,10 @@ export default class Makecode extends Command {
 
     const metaDir = `${appDir}/meta`
     const appFile = `${metaDir}/app.yml`
-    const jsonPath = `${metaDir}/stack.json`
+    // const jsonPath = `${metaDir}/stack.json`
     const appInfo = await getAppInfo(appFile)
     this.log(`about generateAppCode(${appDir})`)
-    await generateAppCode(appDir, appInfo, jsonPath)
+    await generateAppCode(appDir, appInfo)
 
     this.log(`about to insertAddedCode(${appDir})`)
     const addedCodeDoc = `${metaDir}/addedCode.json`

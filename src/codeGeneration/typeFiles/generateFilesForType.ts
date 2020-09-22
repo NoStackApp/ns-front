@@ -1,9 +1,10 @@
 import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../../constants'
-import {SourceInfo, StackInfo} from '../../constants/types'
+import {AppInfo, SourceInfo, Schema} from '../../constants/types'
 import {generateTypeFile} from './generateTypeFile'
 
 export async function generateFilesForType(
-  currentStack: StackInfo,
+  appInfo: AppInfo,
+  currentStack: Schema,
   type: string,
   source: string,
   selectionRoot: string,
@@ -51,6 +52,7 @@ export async function generateFilesForType(
       type,
       sourceUnit,
       selectionBoilerPlateInfo,
+      appInfo,
       currentStack,
       templateDir,
       compDir
@@ -61,6 +63,7 @@ export async function generateFilesForType(
     type,
     source,
     boilerPlateInfo,
+    appInfo,
     currentStack,
     templateDir,
     compDir
@@ -79,6 +82,7 @@ export async function generateFilesForType(
       type,
       source,
       creationBoilerPlateInfo,
+      appInfo,
       currentStack,
       templateDir,
       compDir
@@ -93,6 +97,7 @@ export async function generateFilesForType(
       type,
       source,
       singularBoilerPlateInfo,
+      appInfo,
       currentStack,
       templateDir,
       compDir

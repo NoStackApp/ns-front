@@ -44,8 +44,6 @@ export default class Test extends Command {
     const metaDir = `${appDir}/meta`
     const appFile = `${metaDir}/app.yml`
 
-    const jsonPath = `${metaDir}/stack.json`
-
     // npm version 8 has a known bug with fs-extra...
     const nodeRelease = parseFloat(process.versions.node)
     if (nodeRelease < 9) {
@@ -64,7 +62,7 @@ export default class Test extends Command {
       await fs.remove(testDir)
       await fs.ensureDir(`${testDir}/src/components`)
       // await fs.copy(`${appDir}/src/components`, `${testDir}/src/components`)
-      await generateAppCode(testDir, appInfo, jsonPath)
+      await generateAppCode(testDir, appInfo)
     } catch (error) {
       throw error
     }

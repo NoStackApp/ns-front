@@ -3,7 +3,7 @@ const fs = require('fs-extra')
 import {AppInfo, Configuration} from '../constants/types'
 import {allCaps} from '../tools/inflections'
 import {loadFileTemplate} from './loadFileTemplate'
-import {parseUnitSpecName} from './parseUnitSpecName'
+import {parseSpecName} from '../constants/parseSpecName'
 import {unitNameFromSpec} from './unitNameFromSpec'
 
 export async function createQueryFiles(config: Configuration, appInfo: AppInfo, appDir: string) {
@@ -13,7 +13,7 @@ export async function createQueryFiles(config: Configuration, appInfo: AppInfo, 
   ) return
 
   // create query files in the directory specified by the template.
-  const {units, template} = appInfo
+  const {units, template, backend} = appInfo
   const templateDir = template.dir
   const queriesDir = `${appDir}/${config.dirs.queries}`
 
@@ -21,13 +21,13 @@ export async function createQueryFiles(config: Configuration, appInfo: AppInfo, 
   try {
     await Promise.all(Object.keys(units).map(async unitKey => {
       const unit = unitNameFromSpec(unitKey)
-      const keyInQueries = parseUnitSpecName(unitKey).name
+      const keyInQueries = parseSpecName(unitKey).name
 
-      if (!appInfo.backend ||
-        !appInfo.backend.queries ||
-        !appInfo.backend.queries[unit]) return
+      if (!backend ||
+        !backend.queries ||
+        !backend.queries[keyInQueries]) return
 
-      const unitQueryInfo = appInfo.backend.queries[keyInQueries]
+      const unitQueryInfo = backend.queries[keyInQueries]
 
       const queryFileText = queryFileTemplate({
         unitAllCaps: allCaps(unit),

@@ -1,5 +1,5 @@
 import {dataTypes, formTypes, nodeTypes} from '../constants'
-import {AppInfo, StackInfo} from '../constants/types'
+import {AppInfo, BackendIdList, Schema} from '../constants/types'
 import {
   allCaps,
   pluralLowercaseName,
@@ -13,7 +13,7 @@ const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component
 
 export const contextForStandard = (
   appInfo: AppInfo,
-  stackInfo: StackInfo,
+  stackInfo: Schema,
   component: string
 ) => {
   // stack data
@@ -49,11 +49,13 @@ export const contextForStandard = (
     }
   })
 
+  let typeIds: BackendIdList
+  if (appInfo.backend && appInfo.backend.ids && appInfo.backend.ids.types)
+    typeIds = appInfo.backend.ids.types
   const typesText = Object.keys(stackInfo.types).map(typeName => {
-    const currentTypeInfo = stackInfo.types[typeName]
     return {
-      typeConst: currentTypeInfo.const,
-      typeId: currentTypeInfo.id,
+      typeConst: `TYPE_${allCaps(typeName)}_ID`,
+      typeId: typeIds ? typeIds[typeName] : undefined,
     }
   })
 
@@ -90,9 +92,9 @@ export const contextForStandard = (
     topComponentPropSetting,
     userTypeId,
     appName: appInfo.appName,
-    stackId: stackInfo.stack.stackId,
     sources: sourceList,
     types: typesText,
     actionTypes: actionTypeList,
+    stackInfo,
   }
 }

@@ -1,6 +1,4 @@
 import {Configuration} from '../constants/types'
-import {singularName} from '../tools/inflections'
-import {parseUnitSpecName} from './parseUnitSpecName'
 import {unitNameFromSpec} from './unitNameFromSpec'
 
 const fs = require('fs-extra')

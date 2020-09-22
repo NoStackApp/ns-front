@@ -1,11 +1,12 @@
 // import {TSError} from 'ts-node'
 // import {fileURLToPath} from 'url'
 import {BoilerPlateInfoType} from '../../constants'
-import {StackInfo} from '../../constants/types'
+import {AppInfo, Schema} from '../../constants/types'
 import {singularName} from '../../tools/inflections'
 import {context} from '../context'
 import {loadFileTemplate} from '../loadFileTemplate'
 import {makeDirs} from '../makeDirs'
+import {registerHelpers} from '../registerHelpers'
 import {registerPartials} from '../registerPartials'
 import {boilerPlateToDir} from './boilderPlateToDir'
 // import {generic} from '../sections/generic'
@@ -24,29 +25,34 @@ export async function generateTypeFile(
   type: string,
   source: string,
   boilerPlateInfo: BoilerPlateInfoType,
-  currentStack: StackInfo,
-  templateLocation: string,
+  appInfo: AppInfo,
+  currentStack: Schema,
+  templateDir: string,
   compDir: string
 ) {
   const dir = boilerPlateToDir(type, boilerPlateInfo.formType)
 
   try {
-    await registerPartials(`${templateLocation}/partials`)
+    await registerPartials(`${templateDir}/partials`)
+    await registerHelpers(`${templateDir}/helpers`)
   } catch (error) {
-    throw new Error(`error registering the partials at ${templateLocation}.
+    // eslint-disable-next-line no-console
+    console.log(error)
+    throw new Error(`error registering the partials or helpers at ${templateDir}.
 It may be that the template location is faulty, or that the template is not
 correctly specified:
 ${error}`)
   }
 
-  const genericTemplate = await loadFileTemplate(`${templateLocation}/generic.hbs`)
+  // console.log(`here's a list of helpers: ${JSON.stringify(Handlebars.helpers, null, 2)}`)
+  const genericTemplate = await loadFileTemplate(`${templateDir}/generic.hbs`)
 
   const path = `${compDir}/${singularName(source)}/${dir}`
   const dirList = [
     path,
   ]
 
-  const tags = context(type, source, currentStack, boilerPlateInfo)
+  const tags = await context(type, source, appInfo, currentStack, boilerPlateInfo)
   // console.log(`tags.context.formTypes.LIST=${JSON.stringify(tags.context.formTypes.LIST)}`)
   // console.log(`tags.context.boilerPlateInfo.formType=${JSON.stringify(tags.context.boilerPlateInfo.formType)}`)
 

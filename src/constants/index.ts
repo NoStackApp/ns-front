@@ -6,7 +6,7 @@ export const associationTypes = {
   MULTIPLE: 'multiple',
   SINGLE_REQUIRED: 'singleRequired',
   SELECTABLE: 'selectable',
-  // VIEWABLE: 'viewable',
+  VIEWABLE: 'viewable',
 }
 
 export const dataTypes = {
@@ -92,4 +92,20 @@ export  const standardActionIds = {
   VERIFY_TOKEN: '1279e113-d70f-4a95-9890-a5cebd344f3d',
   REFRESH_TOKEN: '96d3be63-53c5-418e-9167-71e3d43271e3',
   LOGIN: 'a0d89c1f-c423-45e0-9339-c719dcbb7afe',
+}
+
+export const typePrefixes = {
+  CREATE: 'create',
+  SELECT: 'select',
+  USE: 'use',
+  CONSTRAIN: 'constrain',
+}
+
+export const constraintTypes = {
+  ID: 'ID',
+  VALUE: 'value',
+}
+
+export const unitPrefixes = {
+  SELECTABLE: 'selectable',
 }

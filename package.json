@@ -7,13 +7,7 @@
     "nsfront": "./bin/run"
   },
   "keywords": [
-    "template",
-    "front end",
-    "automated",
-    "update",
-    "cli",
-    "custom",
-    "customized"
+    "oclif"
   ],
   "bugs": "https://github.com/https://github.com/NoStackApp/ns-front/issues",
   "dependencies": {
@@ -37,6 +31,7 @@
     "node-fetch": "^2.6.1",
     "pluralize": "^8.0.0",
     "prompts": "^2.3.2",
+    "traverse": "^0.6.6",
     "tslib": "^1.13.0"
   },
   "devDependencies": {
@@ -67,9 +62,6 @@
     "/oclif.manifest.json"
   ],
   "homepage": "https://github.com/https://github.com/NoStackApp/ns-front",
-  "keywords": [
-    "oclif"
-  ],
   "license": "MIT",
   "main": "lib/index.js",
   "oclif": {

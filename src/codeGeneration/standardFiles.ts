@@ -1,6 +1,7 @@
-import {AppInfo, Directory, StackInfo} from '../constants/types'
+import {AppInfo, Directory, Schema} from '../constants/types'
 import {contextForStandard} from './contextForStandard'
 import {loadFileTemplate} from './loadFileTemplate'
+import {registerHelpers} from './registerHelpers'
 import {registerPartials} from './registerPartials'
 
 const fs = require('fs-extra')
@@ -15,9 +16,19 @@ async function processDirStructure(
   appDir: string,
   templateDir: string,
   appInfo: AppInfo,
-  stackInfo: StackInfo,
+  stackInfo: Schema,
 ) {
-  await registerPartials(`${templateDir}/partials`)
+  try {
+    await registerPartials(`${templateDir}/partials`)
+    await registerHelpers(`${templateDir}/helpers`)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error)
+    throw new Error(`error registering the partials or helpers at ${templateDir}.
+It may be that the template location is faulty, or that the template is not
+correctly specified:
+${error}`)
+  }
 
   await Promise.all(Object.keys(fileStructure).map(
     async name => {
@@ -66,7 +77,7 @@ export async function standardFiles(
   templateDir: string,
   appDir: string,
   appInfo: AppInfo,
-  stackInfo: StackInfo,
+  stackInfo: Schema,
 ) {
   let fileStructure: Directory
   const standardFile = `${templateDir}/standard.yml`

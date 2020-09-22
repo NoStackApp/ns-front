@@ -27,7 +27,8 @@ export interface TreeTypeChildrenList {
 }
 
 interface SelectedTreeList {
-  [type: string]: [string];
+  highestLevel: string[];
+  [type: string]: string[];
 }
 
 interface TreeTypeList {
@@ -49,11 +50,12 @@ interface ConstraintsSet {
 }
 
 interface JoinInfo {
+  fromUnit: string;
   fromType: string;
   toUnit: string;
   toType: string;
   assnType: string;
-  joinAssnId: string;
+  joinAssnId?: string;
 }
 
 interface JoinsList {
@@ -61,21 +63,22 @@ interface JoinsList {
 }
 
 export interface SourceInfo {
-  id: string;
+  id?: string;
   const: string;
   unitType: string;
   props: PropsInfo;
   name: string;
-  depth: number;
+  depth?: number;
   tree: TreeTypeList;
-  selections: [];
+  selections: string[];
   selectedTree: SelectedTreeList;
   constraints: ConstraintsSet;
   connections: ConnectedList;
-  owner: string;
-  root: string;
-  selectionRoot: string;
-  joins: JoinsList;
+  owner?: string;
+  root?: string;
+  selectionRoot: string | null;
+  joins?: JoinsList;
+  topSource: string | null;
 }
 
 /*
@@ -91,9 +94,9 @@ export interface SourceInfo {
  */
 export interface UserClassInfo {
   name: string;
-  id: string;
+  // id: string;
   topSource: string;
-  samples: object;
+  // samples: object;
 }
 
 export interface UserClasses {
@@ -106,31 +109,29 @@ export interface Sources {
 
 export interface TypeSourceInfo {
   assnType: string;
-  sourceUnit: string;
   nodeType: string;
   parentType: string;
   children: string[];
+  joins?: JoinsList;
+  sourceUnit?: string;
 }
 
 export interface TypeSources {
   [sourceName: string]: TypeSourceInfo;
+
 }
 
 export interface TypeInfo {
-  const: string;
+  // const: string;
   name: string;
   dataType: string;
-  plural: string;
+  // plural: string;
   sources: TypeSources;
-  id: string;
+  // id: string;
 }
 
 export interface Types {
   [typeName: string]: TypeInfo;
-}
-
-export interface StackMeta {
-  stackId: string;
 }
 
 export interface ActionInfo {
@@ -152,13 +153,13 @@ export interface ActionsByActionType {
   [actionType: string]: Actions;
 }
 
-export interface StackInfo {
+export interface Schema {
   topSource: string;
   userClasses: UserClasses;
   sources: Sources;
   types: Types;
   actions: ActionsByActionType;
-  stack: StackMeta;
+  backend?: BackendData;
 }
 
 /*
@@ -184,16 +185,16 @@ interface TypeHierarchy {
   [key: string]: string | TypeHierarchy | null;
 }
 
-interface UnitDiscription {
+export interface UnitDiscription {
   userClass?: string;
   hierarchy: TypeHierarchy;
 }
 
-interface Units {
+export interface Units {
   [key: string]: UnitDiscription;
 }
 
-interface BackendIdList {
+export interface BackendIdList {
   [key: string]: string;
 }
 
@@ -233,6 +234,15 @@ interface AppTemplateInfo {
   dir: string;
 }
 
+export interface AppJoinInfo {
+  to: string;
+  from: string;
+}
+
+export interface JoinsData {
+  [name: string]: AppJoinInfo;
+}
+
 export interface AppInfo {
   appName: string;
   template: AppTemplateInfo;
@@ -240,6 +250,7 @@ export interface AppInfo {
   units: Units;
   topUnits: string[];
   backend?: BackendData;
+  joins?: JoinsData;
 }
 
 // following is a recursive Directory type.  A directory can contain
@@ -274,8 +285,8 @@ export interface Configuration {
   placeholderAppCreation: PlaceholderAppCreation;
 }
 
-export interface UnitNameInfo {
+export interface SpecNameInfo {
   name: string;
-  detail?: string;
-  prefix?: string;
+  detail: string;
+  prefix: string;
 }

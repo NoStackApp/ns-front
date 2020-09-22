@@ -1,6 +1,6 @@
 import {singularName} from '../tools/inflections'
-import {parseUnitSpecName} from './parseUnitSpecName'
+import {parseSpecName} from '../constants/parseSpecName'
 
 export const unitNameFromSpec = (text: string) => {
-  return singularName(parseUnitSpecName(text).name)
+  return singularName(parseSpecName(text).name)
 }

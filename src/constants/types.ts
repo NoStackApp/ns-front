@@ -277,10 +277,19 @@ export interface PlaceholderAppCreation {
   preCommands?: CommandSpec[];
 }
 
+interface UnitDataTypeSpecification {
+  components: null | string[];
+}
+
+export interface UnitDataTypesSet {
+  [name: string]: UnitDataTypeSpecification;
+}
+
 export interface Configuration {
   name: string;
   version: string;
   category: string;
+  unitDataTypes: UnitDataTypesSet;
   dirs: ConfigurationDirectories;
   placeholderAppCreation: PlaceholderAppCreation;
 }

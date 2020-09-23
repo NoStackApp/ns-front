@@ -4,7 +4,7 @@ import {generateTypeFile} from './generateTypeFile'
 
 export async function generateFilesForType(
   appInfo: AppInfo,
-  currentStack: Schema,
+  schema: Schema,
   type: string,
   source: string,
   selectionRoot: string,
@@ -14,7 +14,7 @@ export async function generateFilesForType(
   templateDir: string,
   compDir: string,
 ) {
-  const typeInfo = currentStack.types[type]
+  const typeInfo = schema.types[type]
   const typeSourceInfo = typeInfo.sources[source]
   const {assnType, sourceUnit} = typeSourceInfo
   let {nodeType} = typeSourceInfo
@@ -53,7 +53,7 @@ export async function generateFilesForType(
       sourceUnit,
       selectionBoilerPlateInfo,
       appInfo,
-      currentStack,
+      schema,
       templateDir,
       compDir
     )
@@ -64,7 +64,7 @@ export async function generateFilesForType(
     source,
     boilerPlateInfo,
     appInfo,
-    currentStack,
+    schema,
     templateDir,
     compDir
   )
@@ -83,7 +83,7 @@ export async function generateFilesForType(
       source,
       creationBoilerPlateInfo,
       appInfo,
-      currentStack,
+      schema,
       templateDir,
       compDir
     )
@@ -98,7 +98,7 @@ export async function generateFilesForType(
       source,
       singularBoilerPlateInfo,
       appInfo,
-      currentStack,
+      schema,
       templateDir,
       compDir
     )

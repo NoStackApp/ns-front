@@ -15,9 +15,10 @@ export async function generateAppCode(
   // jsonPath: string,
 ) {
   const {userClass, units, template} = appInfo
-  const stackInfo: Schema = await buildSchema(appInfo)
-
   const config = await getConfiguration(template.dir)
+
+  const stackInfo: Schema = await buildSchema(appInfo, config)
+
   // console.log(`stacklocation=${appDir}/stack.json`)
   // const stackInfo: Schema = await fs.readJSON(jsonPath) // await generateJSON.bind(this)(template, appDir)
 
@@ -71,7 +72,14 @@ export async function generateAppCode(
   const compDir = `${appDir}/${config.dirs.components}`
 
   try {
-    await generateAppTypeFiles(userClass, appInfo, stackInfo, template.dir, compDir)
+    await generateAppTypeFiles(
+      userClass,
+      appInfo,
+      stackInfo,
+      template.dir,
+      compDir,
+      config
+    )
   } catch (error) {
     throw error
   }

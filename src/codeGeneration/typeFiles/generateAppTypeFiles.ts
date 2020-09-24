@@ -1,4 +1,4 @@
-import {AppInfo, Schema} from '../../constants/types'
+import {AppInfo, Configuration, Schema} from '../../constants/types'
 import {generateUnitTypeFiles} from './generateUnitTypeFiles'
 
 export async function generateAppTypeFiles(
@@ -6,17 +6,25 @@ export async function generateAppTypeFiles(
   appInfo: AppInfo,
   stackInfo: Schema,
   templateDir: string,
-  compDir: string
+  compDir: string,
+  config: Configuration,
 ) {
   const units = stackInfo.sources
   const unitKeys = Object.keys(units)
 
-  // console.log(`in generateAppTypeFiles, compDir=${compDir}`)
   let i
   for (i = 0; i < unitKeys.length; i++) {
     const unit = unitKeys[i]
 
     // eslint-disable-next-line no-await-in-loop
-    await generateUnitTypeFiles(unit, userClass, appInfo, stackInfo, templateDir, compDir)
+    await generateUnitTypeFiles(
+      unit,
+      userClass,
+      appInfo,
+      stackInfo,
+      templateDir,
+      compDir,
+      config,
+    )
   }
 }

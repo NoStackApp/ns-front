@@ -1,8 +1,8 @@
-import {dataTypes, associationTypes, nodeTypes, typePrefixes, constraintTypes} from '../../constants'
-import {Schema, SpecNameInfo} from '../../constants/types'
+import {dataTypes, nodeTypes, typePrefixes, constraintTypes} from '../../constants'
+import {Configuration, Schema, SpecNameInfo} from '../../constants/types'
 const inflection = require('inflection')
 // const createActionsForType = require('./createActionsForType')
-import {assnTypesForPrefix} from './assnTypesForPrefix'
+// import {assnTypesForPrefix} from './assnTypesForPrefix'
 
 function handleParentOfAssn(
   schema: Schema,
@@ -41,21 +41,28 @@ function handleParentOfAssn(
   // )
 }
 
-export const newType = (schema: Schema, typeInfo: SpecNameInfo, unitName: string, parentType: string) => {
+export const newType = (
+  schema: Schema,
+  typeInfo: SpecNameInfo,
+  unitName: string,
+  parentType: string,
+  config: Configuration,
+) => {
   const typeName = typeInfo.name
   const typePrefix = typeInfo.prefix
-  let assnType = assnTypesForPrefix[typePrefix]
+  const assnType = typePrefix
 
   const dataType = dataTypes.STRING
+  const {dataFunctionTypes} = config
 
   // if (typeProperties && typeProperties.dataType) {
   //   dataType = typeProperties.dataType
   // }
 
-  if (dataType === dataTypes.BOOLEAN ||
-        dataType === dataTypes.NUMBER) {
-    assnType = associationTypes.SINGLE_REQUIRED // assumed for those types
-  }
+  // if (dataType === dataTypes.BOOLEAN ||
+  //       dataType === dataTypes.NUMBER) {
+  //   assnType = associationTypes.SINGLE_REQUIRED // assumed for those types
+  // }
 
   // console.log(`in traverse, typeName=${typeName}, assnType=${assnType}`)
   if (assnType === 'undefined') {
@@ -65,8 +72,9 @@ export const newType = (schema: Schema, typeInfo: SpecNameInfo, unitName: string
   }
 
   let sourceUnit
-  if (assnType === associationTypes.SELECTABLE ||
-        assnType === associationTypes.VIEWABLE) {
+  // if (assnType === associationTypes.SELECTABLE ||
+  //       assnType === associationTypes.VIEWABLE) {
+  if (dataFunctionTypes[assnType].requiresSource) {
     sourceUnit = typeInfo.detail
 
     // if (stack.sources[sourceUnit] == null) {
@@ -138,11 +146,13 @@ export const newType = (schema: Schema, typeInfo: SpecNameInfo, unitName: string
   // if (depth > treeDepth) stack.sources[unit].depth = depth;
 
   let nodeType = nodeTypes.NONROOT
-  if (assnType === associationTypes.SINGLE_REQUIRED)
-    nodeType = nodeTypes.PROPERTY
-  if (assnType === associationTypes.SELECTABLE)
-    nodeType = nodeTypes.SELECTABLE
-  if (!parentType) nodeType = nodeTypes.ROOT
+  // if (assnType === associationTypes.SINGLE_REQUIRED)
+  //   nodeType = nodeTypes.PROPERTY
+  // if (assnType === associationTypes.SELECTABLE)
+  //   nodeType = nodeTypes.SELECTABLE
+  // if (!parentType) nodeType = nodeTypes.ROOT
+  if (dataFunctionTypes[assnType].nodeType)
+    nodeType = dataFunctionTypes[assnType].nodeType
 
   // const finalParentType = parentType !== ROOT_NODE ? parentType : null;
 

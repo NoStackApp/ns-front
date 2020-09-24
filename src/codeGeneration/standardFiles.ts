@@ -111,10 +111,7 @@ ${error}`)
     const newPath = `${appDir}${localPath}`
     const parsed = path.parse(newPath)
     const newFileName = path.join(parsed.dir, parsed.name)
-    console.log(`newFileName = ${newFileName}`)
-    const {ext} = parsed.ext
-
-    console.log(`parsed = ${JSON.stringify(parsed, null, 1)}`)
+    // const {ext} = parsed.ext
     // if (ext !== '.hbs') {
     //   throw new Error(`the file ${filename} in the template standard dir
     //   does not end with the .hbs extension.  The only files permitted must have
@@ -123,7 +120,6 @@ ${error}`)
 
     const fileText = await fileTemplate(contextForStandard(appInfo, stackInfo, parsed.name))
     await fs.outputFile(newFileName, fileText)
-    console.log('file from emitter: ', newFileName)
   })
 
   emitter.on('directory', async function (path: any) {
@@ -132,7 +128,6 @@ ${error}`)
     try {
       // await fs.ensureDir(childrenAppDir, options)
       await fs.ensureDir(newPath, options)
-      console.log(`success creating dir: ${newPath}`)
     } catch (error) {
       // eslint-disable-next-line no-console
       throw error

@@ -1,14 +1,14 @@
 // import {TSError} from 'ts-node'
 // import {fileURLToPath} from 'url'
 import {BoilerPlateInfoType} from '../../constants'
-import {AppInfo, Schema} from '../../constants/types'
+import {AppInfo, Configuration, Schema} from '../../constants/types'
 import {singularName} from '../../tools/inflections'
 import {context} from '../context'
 import {loadFileTemplate} from '../loadFileTemplate'
 import {makeDirs} from '../makeDirs'
 import {registerHelpers} from '../registerHelpers'
 import {registerPartials} from '../registerPartials'
-import {boilerPlateToDir} from './boilderPlateToDir'
+import {componentName} from './componentName'
 // import {generic} from '../sections/generic'
 
 const Handlebars = require('handlebars')
@@ -28,9 +28,13 @@ export async function generateTypeFile(
   appInfo: AppInfo,
   currentStack: Schema,
   templateDir: string,
-  compDir: string
+  compDir: string,
+  config: Configuration,
 ) {
-  const dir = boilerPlateToDir(type, boilerPlateInfo.formType)
+  const {componentTypes} = config
+  if (!componentTypes) throw new Error('No component types found for the template.')
+  const dir = componentName(type, componentTypes[boilerPlateInfo.componentType])
+  console.log(`dir=${dir}`)
 
   try {
     await registerPartials(`${templateDir}/partials`)
@@ -52,7 +56,14 @@ ${error}`)
     path,
   ]
 
-  const tags = await context(type, source, appInfo, currentStack, boilerPlateInfo)
+  const tags = await context(
+    type,
+    source,
+    appInfo,
+    currentStack,
+    boilerPlateInfo,
+    config,
+  )
   // console.log(`tags.context.formTypes.LIST=${JSON.stringify(tags.context.formTypes.LIST)}`)
   // console.log(`tags.context.boilerPlateInfo.formType=${JSON.stringify(tags.context.boilerPlateInfo.formType)}`)
 
@@ -77,6 +88,7 @@ ${error}`)
     // })
 
     // await fs.outputFile(`${path}/index.jsx`, specificFileTemplate(tags))
+    console.log(`  path to output=${path}/index.jsx`)
     await fs.outputFile(`${path}/index.jsx`, genericTemplate(tags))
   } catch (error) {
     throw new Error(`error with generateFromBoilerPlate: ${error}`)

@@ -67,6 +67,8 @@ export default class Test extends Command {
       throw error
     }
 
+    // this.log('*** temporary injected return for testing ***')
+    // return // temp
     const addedCodeDoc = `${metaDir}/addedCode.json`
     await insertAddedCode(testDir, addedCodeDoc)
 

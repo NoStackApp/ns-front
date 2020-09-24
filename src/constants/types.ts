@@ -277,19 +277,32 @@ export interface PlaceholderAppCreation {
   preCommands?: CommandSpec[];
 }
 
-interface UnitDataTypeSpecification {
-  components: null | string[];
+export interface ComponentTypeSpec {
+  singular: boolean;
+  suffix?: string;
+  prefix?: string;
 }
 
-export interface UnitDataTypesSet {
-  [name: string]: UnitDataTypeSpecification;
+export interface ComponentTypes {
+  [name: string]: ComponentTypeSpec;
+}
+
+interface DataFunctionType {
+  components: null | string[];
+  requiresSource?: boolean;
+  nodeType: string;
+}
+
+export interface DataFunctionTypes {
+  [name: string]: DataFunctionType;
 }
 
 export interface Configuration {
   name: string;
   version: string;
   category: string;
-  unitDataTypes: UnitDataTypesSet;
+  componentTypes: ComponentTypes;
+  dataFunctionTypes: DataFunctionTypes;
   dirs: ConfigurationDirectories;
   placeholderAppCreation: PlaceholderAppCreation;
 }

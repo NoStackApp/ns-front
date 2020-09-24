@@ -1,6 +1,6 @@
 'use strict'
 
-import {AppInfo, Schema} from '../../constants/types'
+import {AppInfo, Configuration, Schema} from '../../constants/types'
 import {addUserClass} from './newUserClass'
 
 import {addUnits} from './addUnits'
@@ -14,13 +14,13 @@ const emptySchema: Schema = {
   topSource: '',
 }
 
-export const buildSchema = async (appInfo: AppInfo) => {
+export const buildSchema = async (appInfo: AppInfo, config: Configuration) => {
   let schema: Schema = emptySchema
 
   const {units, userClass, joins} = appInfo
   schema = addUserClass(schema, userClass)
 
-  schema = addUnits(units, schema)
+  schema = addUnits(units, schema, config)
   if (joins) {
     schema = addJoins(joins, schema)
   }

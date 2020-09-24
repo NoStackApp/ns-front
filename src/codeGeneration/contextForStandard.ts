@@ -71,11 +71,6 @@ export const contextForStandard = (
     component: names.component,
   })
 
-  Handlebars.registerHelper('tempDetails', function () {
-    const tempDetails = `unit: ${unit}, comp: ${names.component}, loc:`
-    return new Handlebars.SafeString(tempDetails)
-  })
-
   // const tempDetails = fileInfoString({
   //   unitName: unit,
   //   component: names.component,

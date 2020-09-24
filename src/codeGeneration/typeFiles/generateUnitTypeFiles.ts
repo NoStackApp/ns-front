@@ -1,5 +1,5 @@
 import {unitTypes} from '../../constants'
-import {AppInfo, Schema} from '../../constants/types'
+import {AppInfo, Configuration, Schema} from '../../constants/types'
 import {generateFilesForType} from './generateFilesForType'
 
 export async function generateUnitTypeFiles(
@@ -8,7 +8,8 @@ export async function generateUnitTypeFiles(
   appInfo: AppInfo,
   stackInfo: Schema,
   templateDir: string,
-  compDir: string
+  compDir: string,
+  config: Configuration
 ) {
   const sources = stackInfo.sources
   const sourceInfo = sources[source]
@@ -53,6 +54,7 @@ export async function generateUnitTypeFiles(
         highestLevel,
         templateDir,
         compDir,
+        config,
       )
     }
 

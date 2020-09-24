@@ -1,9 +1,9 @@
 import {AppJoinInfo, Schema} from '../../constants/types'
 
-import {associationTypes} from '../../constants'
+// import {associationTypes} from '../../constants'
 import {parseSpecName} from '../../constants/parseSpecName'
 // import {createActionsForType} from './createActionsForType'
-import {assnTypesForPrefix} from './assnTypesForPrefix'
+// import {assnTypesForPrefix} from './assnTypesForPrefix'
 // const newType = require('newType');
 // // const pluralize = require('pluralize');
 // const traverse = require('traverse');
@@ -26,10 +26,13 @@ export const newJoin = (schema: Schema, joinString: string, joinInfo: AppJoinInf
   const joinName = joinStringInfo.name
   const typePrefix = joinStringInfo.prefix
 
-  let assnType = associationTypes.SELECTABLE // default
-  if (typePrefix) {
-    assnType = assnTypesForPrefix[typePrefix]
+  if (!typePrefix) {
+    throw new Error(`no specified type in the join ${joinString} in the 'app.yml' file`)
   }
+
+  // let assnType = associationTypes.SELECTABLE // default
+  // assnType = assnTypesForPrefix[typePrefix]
+  const assnType = typePrefix
 
   const fromInfo = parseSpecName(joinInfo.from)
   const toInfo = parseSpecName(joinInfo.to)

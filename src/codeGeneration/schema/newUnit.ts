@@ -1,5 +1,5 @@
 import {unitTypes, unitPrefixes} from '../../constants'
-import {Schema, UnitDiscription, SpecNameInfo} from '../../constants/types'
+import {Schema, UnitDiscription, SpecNameInfo, Configuration} from '../../constants/types'
 
 const traverse = require('traverse')
 
@@ -18,7 +18,12 @@ import {parseSpecName} from '../../constants/parseSpecName'
 //   return node
 // }
 
-export const newUnit = (stack: Schema, unitString: string, unitInfo: UnitDiscription) => {
+export const newUnit = (
+  stack: Schema,
+  unitString: string,
+  unitInfo: UnitDiscription,
+  config: Configuration,
+) => {
   // console.log(`in newUnit (unitName=${unitString})`)
   const unitStringInfo: SpecNameInfo = parseSpecName(unitString)
   const unitName: string = unitStringInfo.name
@@ -89,7 +94,7 @@ export const newUnit = (stack: Schema, unitString: string, unitInfo: UnitDiscrip
     // }
 
     try {
-      newType(stack, typeInfo, unitName, parentType)
+      newType(stack, typeInfo, unitName, parentType, config)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)

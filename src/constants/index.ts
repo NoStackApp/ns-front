@@ -36,7 +36,7 @@ export const unitTypes = {
 }
 
 export interface BoilerPlateInfoType {
-  formType: string;
+  componentType: string;
   dataType: string;
   nodeType: string;
 }

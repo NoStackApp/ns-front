@@ -1,5 +1,5 @@
 import {associationTypes, BoilerPlateInfoType, dataTypes, formTypes, nodeTypes} from '../constants'
-import {AppInfo, Schema, TreeTypeChildrenList} from '../constants/types'
+import {AppInfo, Configuration, Schema, TreeTypeChildrenList} from '../constants/types'
 import {
   allCaps,
   pluralLowercaseName,
@@ -8,15 +8,16 @@ import {
   relationshipsForSource,
   singularName,
 } from '../tools/inflections'
+import {componentName} from './typeFiles/componentName'
 
 const Handlebars = require('handlebars')
 
-const getComponentName = (type: string, componentType: string) => {
-  if (componentType === formTypes.CREATION)
-    return singularName(type) + 'CreationForm'
-  if (componentType === formTypes.LIST) return pluralName(type)
-  return singularName(type)
-}
+// const getComponentName = (type: string, componentType: string) => {
+//   if (componentType === formTypes.CREATION)
+//     return singularName(type) + 'CreationForm'
+//   if (componentType === formTypes.LIST) return pluralName(type)
+//   return singularName(type)
+// }
 
 const fileInfoString = Handlebars.compile('unit: {{unitName}}, comp: {{component}}')
 
@@ -26,6 +27,7 @@ export const context = async (
   appInfo: AppInfo,
   stackInfo: Schema,
   boilerPlateInfo: BoilerPlateInfoType,
+  config: Configuration,
 ) => {
   // stack data
   const typesInfo = stackInfo.types
@@ -42,13 +44,18 @@ export const context = async (
   // }
   // const children = getChildren(type, unit, appInfo)
 
+  const {componentTypes} = config
+  if (!componentTypes) throw new Error('No component types found for the template.')
+  const componentTypeSpec = componentTypes[boilerPlateInfo.componentType]
+  if (!componentTypeSpec) throw new Error(`component type ${type} is used in the template,
+   but is not found in the config file in 'componentTypes'.`)
   const names = {
     singular: singularName(type),
     singularLowercase: type,
     plural: pluralName(type),
     pluralLowercase: pluralLowercaseName(type),
     parent: parentType,
-    component: getComponentName(type, boilerPlateInfo.formType),
+    component: componentName(type, componentTypeSpec),
     source: {
       name: unit,
       allCaps: allCaps(unit),
@@ -72,10 +79,11 @@ export const context = async (
     }
   }
 
-  Handlebars.registerHelper('tempDetails', function () {
-    const tempDetails = `unit: ${unit}, comp: ${names.component}, loc:`
-    return new Handlebars.SafeString(tempDetails)
-  })
+  const tempDetails = `unit: ${unit}, comp: ${names.component}, loc:`
+  // Handlebars.registerHelper('tempDetails', function (unit: string, compName: string) {
+  //   const tempDetails = `unit: ${unit}, comp: ${compName}, loc:`
+  //   return new Handlebars.SafeString(tempDetails)
+  // })
 
   // data about children
 
